@@ -78,16 +78,64 @@ To get a local copy up and running follow these simple example steps.
     ```sh
     git clone https://github.com/TheIthorian/Java-Todo-App.git
     ```
-2. Set your username and password with
-    ```sh
-    java Todo --username=<my_username> --password=<my_password>
-    ```
+
+---
+
+### Compiling
+
+Compile classes
+
+```sh
+cd src
+javac Todo.java
+```
+
+Compile classes to bin
+
+```sh
+cs src
+javac -d ../bin Todo.java
+# Or optimised:
+javac -O -d ../bin Todo.java
+```
+
+Create Todo.jar from class (Java Archive)
+
+```sh
+cd bin
+jar -cfe Todo.jar Todo *.class
+# Or without a default entry point:
+jar -cf Todo.jar *.class
+```
+
+Run class
+
+```sh
+cd bin
+java App
+```
+
+Run .jar:
+
+```sh
+cd bin
+java -jar Todo.jar # Can only be used if a default entry point is set
+# Or to specify a program other than the default:
+java -cp Todo.jar Todo
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
 
 <!-- USAGE EXAMPLES -->
 
 ## Usage
+
+-   Set your username and password
+    ```sh
+    java Todo --username=<my_username> --password=<my_password>
+    ```
 
 _For more examples, please refer to the [Documentation](https://github.com/TheIthorian/Java-Todo-App)_
 
