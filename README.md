@@ -124,6 +124,8 @@ java -jar Todo.jar # Can only be used if a default entry point is set
 java -cp Todo.jar Todo
 ```
 
+Read more here [https://www.cs.odu.edu/~zeil/cs382/latest/Public/runAnywhere/index.html](https://www.cs.odu.edu/~zeil/cs382/latest/Public/runAnywhere/index.html)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
