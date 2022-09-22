@@ -16,4 +16,8 @@ public class ArgumentCollection {
     public String get(String key) {
         return this.argumentMap.get(key);
     }
+
+    public boolean isEmpty() {
+        return this.argumentMap.isEmpty();
+    }
 }

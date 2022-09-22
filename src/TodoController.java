@@ -14,6 +14,8 @@ public class TodoController {
         this.handleConfigurationOperation(arguments);
         this.handleTodoOperation(arguments);
 
+        this.handleNoOperation(arguments);
+
         this.inputHandler.awaitInput("Prees enter to close...");
     }
 
@@ -33,5 +35,18 @@ public class TodoController {
         } else if (arguments.contains("-d")) {
             this.todoService.deleteTodo(arguments.get("title"));
         }
+    }
+
+    private void handleNoOperation(ArgumentCollection arguments) {
+        if (!arguments.isEmpty()) {
+            return;
+        }
+
+        // Start the application.
+        // Walk through adding, updating etc
+
+        /*
+         * Select option: Find / All / Add / Update / Remove
+         */
     }
 }
