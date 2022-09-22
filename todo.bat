@@ -1,2 +1,3 @@
 @ECHO OFF
 start java -jar bin\Todo.jar
+@REM set /p DUMMY=Press enter to close...
