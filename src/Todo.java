@@ -1,6 +1,6 @@
 public class Todo {
     public static void main(String[] args) {
-        SayHello.sayHelloWorld();
-        InputHandler.awaitInput();
+        TodoController todoController = new TodoController();
+        todoController.run(args);
     }
 }
