@@ -1,22 +1,26 @@
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class InputHandler {
-    public static void awaitInput() {
+public class InputHandler implements IInputHandler {
+    InputHandler() {}
+
+    public String awaitInput(String prompt) {
         Scanner scanner = new Scanner(System.in);
+        String inputValue = "";
+
         try {
-            while (true) {
-                System.out.println("Please input a line");
-                long then = System.currentTimeMillis();
-                String line = scanner.nextLine();
-                long now = System.currentTimeMillis();
-                System.out.printf("Waited %.3fs for user input%n", (now - then) / 1000d);
-                System.out.printf("User input was: %s%n", line);
-            }
-        } catch(IllegalStateException | NoSuchElementException e) {
-            // System.in has been closed
+            System.out.println(prompt);
+            inputValue = scanner.nextLine();
+        } catch (IllegalStateException | NoSuchElementException e) {
             System.out.println("System.in was closed; exiting");
+        } finally {
+            scanner.close();
         }
-        scanner.close();
+
+        return inputValue;
+    }
+
+    public String awaitInput() {
+        return awaitInput("");
     }
 }
