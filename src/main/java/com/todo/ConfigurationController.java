@@ -8,7 +8,9 @@ public class ConfigurationController implements IConfigurationController {
 
     private String username = null;
     private String password = null;
-    private String configurationFilePath = "config.json";
+
+    public static String configurationFilePath = "config.json";
+    public static IFileHandler fileHandler = FileHandler.newInstance();
 
     public ConfigurationController() {
         this.load(configurationFilePath);
