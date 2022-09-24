@@ -2,13 +2,11 @@ package com.todo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Scanner;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONWriter;
 
 public class FileHandler {
 
@@ -65,7 +63,7 @@ public class FileHandler {
             scanner = new Scanner(file);
             return scanner;
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred trying to read file: " + pathname);
+            System.out.println("Unable to find text file: " + pathname);
             e.printStackTrace();
         }
 
@@ -73,20 +71,22 @@ public class FileHandler {
     }
 
     public static JSONObject readJSON(String pathname) {
-        return new JSONObject();
+        JSONObject json = null;
 
-        // JSONWriter writer = new JSONWriter(w);
-        // JSONObject jsonObject = null;
+        Scanner scanner = readText(pathname);
+        String content = "";
 
-        // try (Reader reader = new FileReader(pathname)) {
-        // jsonObject = (JSONObject) parser.parse(reader);
-        // reader.close();
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // } catch (ParseException e) {
-        // e.printStackTrace();
-        // }
+        while (scanner.hasNextLine()) {
+            content += scanner.nextLine();
+        }
 
-        // return jsonObject;
+        try {
+            json = new JSONObject(content);
+        } catch (JSONException e) {
+            System.out.println("Unable to parse JSON file: " + pathname);
+            e.printStackTrace();
+        }
+
+        return json;
     }
 }
