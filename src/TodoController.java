@@ -23,6 +23,7 @@ public class TodoController {
         if (arguments.contains("-cf")) {
             this.configurationController.setUsername(arguments.get("username"));
             this.configurationController.setPassword(arguments.get("password"));
+            this.configurationController.saveToFile();
         }
     }
 
