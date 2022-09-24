@@ -1,3 +1,5 @@
+package com.todo;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -5,9 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Scanner;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONObject;
+import org.json.JSONWriter;
 
 public class FileHandler {
 
@@ -50,7 +51,7 @@ public class FileHandler {
 
     public static void writeJSON(String pathname, JSONObject data) {
         try (FileWriter file = new FileWriter(pathname)) {
-            file.write(data.toJSONString());
+            file.write(data.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,18 +73,20 @@ public class FileHandler {
     }
 
     public static JSONObject readJSON(String pathname) {
-        JSONParser parser = new JSONParser();
-        JSONObject jsonObject = null;
+        return new JSONObject();
 
-        try (Reader reader = new FileReader(pathname)) {
-            jsonObject = (JSONObject) parser.parse(reader);
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        // JSONWriter writer = new JSONWriter(w);
+        // JSONObject jsonObject = null;
 
-        return jsonObject;
+        // try (Reader reader = new FileReader(pathname)) {
+        // jsonObject = (JSONObject) parser.parse(reader);
+        // reader.close();
+        // } catch (IOException e) {
+        // e.printStackTrace();
+        // } catch (ParseException e) {
+        // e.printStackTrace();
+        // }
+
+        // return jsonObject;
     }
 }

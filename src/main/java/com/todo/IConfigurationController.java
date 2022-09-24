@@ -1,3 +1,5 @@
+package com.todo;
+
 public interface IConfigurationController {
     public void setUsername(String username);
 
