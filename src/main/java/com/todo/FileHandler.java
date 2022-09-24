@@ -8,16 +8,20 @@ import java.util.Scanner;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class FileHandler {
+public class FileHandler implements IFileHandler {
 
     public FileHandler() {}
 
-    public static boolean exists(String pathname) {
+    public static FileHandler newInstance() {
+        return new FileHandler();
+    }
+
+    public boolean exists(String pathname) {
         File file = new File(pathname);
         return file.exists() && !file.isDirectory();
     }
 
-    public static void create(String pathname) {
+    public void create(String pathname) {
         try {
             File file = new File(pathname);
             if (file.createNewFile()) {
@@ -31,7 +35,7 @@ public class FileHandler {
         }
     }
 
-    public static void writeText(String pathname, String data) {
+    public void writeText(String pathname, String data) {
         try {
             FileWriter myWriter = new FileWriter(pathname);
             myWriter.write(data);
@@ -43,7 +47,7 @@ public class FileHandler {
 
     }
 
-    public static void writeJSON(String pathname, JSONObject data) {
+    public void writeJSON(String pathname, JSONObject data) {
         try (FileWriter file = new FileWriter(pathname)) {
             file.write(data.toString());
         } catch (IOException e) {
@@ -51,7 +55,7 @@ public class FileHandler {
         }
     }
 
-    public static Scanner readText(String pathname) {
+    public Scanner readText(String pathname) {
         Scanner scanner = null;
 
         try {
@@ -66,7 +70,7 @@ public class FileHandler {
         return scanner;
     }
 
-    public static JSONObject readJSON(String pathname) {
+    public JSONObject readJSON(String pathname) {
         JSONObject json = null;
 
         Scanner scanner = readText(pathname);
