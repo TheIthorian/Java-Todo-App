@@ -36,7 +36,7 @@ public class FileHandler {
         }
     }
 
-    public static void write(String pathname, String data) {
+    public static void writeText(String pathname, String data) {
         try {
             FileWriter myWriter = new FileWriter(pathname);
             myWriter.write(data);
@@ -46,6 +46,14 @@ public class FileHandler {
             e.printStackTrace();
         }
 
+    }
+
+    public static void writeJSON(String pathname, JSONObject data) {
+        try (FileWriter file = new FileWriter(pathname)) {
+            file.write(data.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Scanner readText(String pathname) {
