@@ -10,10 +10,6 @@ import org.json.JSONObject;
 
 public class FileHandler {
 
-    public enum Type {
-        JSON, TEXT
-    }
-
     public FileHandler() {}
 
     public static boolean exists(String pathname) {
