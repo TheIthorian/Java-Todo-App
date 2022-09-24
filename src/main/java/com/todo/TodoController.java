@@ -9,8 +9,6 @@ public class TodoController {
     public TodoController() {}
 
     public void run(String[] args) {
-        System.out.println("Running TodoController");
-
         ArgumentCollection arguments = argumentParser.readArgs(args);
 
         this.handleConfigurationOperation(arguments);
