@@ -1,6 +1,7 @@
 package com.todo;
 
 import java.util.HashMap;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ConfigurationController implements IConfigurationController {
@@ -9,16 +10,16 @@ public class ConfigurationController implements IConfigurationController {
     private String password = null;
     private String configurationFilePath = "config.json";
 
-    public ConfigurationController() {}
+    public ConfigurationController() {
+        this.load(configurationFilePath);
+    }
 
     public void setUsername(String username) {
-        System.out.println("Your username is: " + username);
-        this.username = username;
+        this.username = username != null ? username : this.username;
     }
 
     public void setPassword(String password) {
-        System.out.println("Your password is: " + password);
-        this.password = password;
+        this.password = password != null ? password : this.password;
     }
 
     public void saveToFile() {
@@ -32,8 +33,17 @@ public class ConfigurationController implements IConfigurationController {
     }
 
     public void load(String pathname) {
+        System.out.println("Loading configuration from file...");
         JSONObject config = FileHandler.readJSON(pathname);
-        this.username = (String) config.get("username");
-        this.password = (String) config.get("password");
+        this.username = (String) getValue(config, "username");
+        this.password = (String) getValue(config, "password");
+    }
+
+    private Object getValue(JSONObject config, String key) {
+        try {
+            return config.get(key);
+        } catch (JSONException e) {
+            return null;
+        }
     }
 }
