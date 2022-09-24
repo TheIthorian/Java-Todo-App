@@ -6,5 +6,6 @@
     "java.format.settings.profile": "GoogleStyle",
     "[java]": {
         "editor.defaultFormatter": "redhat.java"
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
