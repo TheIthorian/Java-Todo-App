@@ -7,5 +7,8 @@
     "[java]": {
         "editor.defaultFormatter": "redhat.java"
     },
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "maven.terminal.favorites": [
+        { "alias": "assembly", "command": "assembly:assembly -DdescriptorId=jar-with-dependencies" }
+    ]
 }

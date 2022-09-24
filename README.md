@@ -93,6 +93,8 @@ Create Todo.jar from class (Java Archive)
 
 ```sh
 mvn clean package
+# Or to include dependencies:
+mvn assembly:assembly -DdescriptorId=jar-with-dependencies
 ```
 
 Run .jar
