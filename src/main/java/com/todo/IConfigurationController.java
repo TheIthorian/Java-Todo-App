@@ -5,6 +5,10 @@ public interface IConfigurationController {
 
     public void setPassword(String password);
 
+    public String getUsername();
+
+    public String getPassword();
+
     public void saveToFile();
 
     public void load(String pathname);
