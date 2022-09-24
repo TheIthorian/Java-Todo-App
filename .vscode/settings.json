@@ -7,5 +7,5 @@
     "[java]": {
         "editor.defaultFormatter": "redhat.java"
     },
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
