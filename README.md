@@ -86,42 +86,19 @@ To get a local copy up and running follow these simple example steps.
 Compile classes
 
 ```sh
-cd src
-javac Todo.java
-```
-
-Compile classes to bin
-
-```sh
-cd src
-javac -d ../bin Todo.java
-# Or optimised:
-javac -O -d ../bin Todo.java
+mvn compile
 ```
 
 Create Todo.jar from class (Java Archive)
 
 ```sh
-cd bin
-jar -cfe Todo.jar Todo *.class
-# Or without a default entry point:
-jar -cf Todo.jar *.class
+mvn clean package
 ```
 
-Run class
+Run .jar
 
 ```sh
-cd bin
-java App
-```
-
-Run .jar:
-
-```sh
-cd bin
-java -jar Todo.jar # Can only be used if a default entry point is set
-# Or to specify a program other than the default:
-java -cp Todo.jar Todo
+java -jar target/todo-0.0.1.jar Todo
 ```
 
 Read more here [https://www.cs.odu.edu/~zeil/cs382/latest/Public/runAnywhere/index.html](https://www.cs.odu.edu/~zeil/cs382/latest/Public/runAnywhere/index.html)
