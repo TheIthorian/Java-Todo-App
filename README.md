@@ -93,7 +93,7 @@ javac Todo.java
 Compile classes to bin
 
 ```sh
-cs src
+cd src
 javac -d ../bin Todo.java
 # Or optimised:
 javac -O -d ../bin Todo.java
