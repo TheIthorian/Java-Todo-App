@@ -22,6 +22,7 @@ public class ConfigurationController implements IConfigurationController {
     }
 
     public void saveToFile() {
+        System.out.println("Saving configuration to file...");
         HashMap<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("username", this.username);
         dataMap.put("password", this.password);
