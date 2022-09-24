@@ -39,12 +39,16 @@ public class ConfigurationController implements IConfigurationController {
         dataMap.put("password", this.password);
 
         JSONObject data = new JSONObject(dataMap);
-        FileHandler.writeJSON(this.configurationFilePath, data);
+        fileHandler.writeJSON(configurationFilePath, data);
+    }
+
+    public void load() {
+        load(configurationFilePath);
     }
 
     public void load(String pathname) {
         System.out.println("Loading configuration from file...");
-        JSONObject config = FileHandler.readJSON(pathname);
+        JSONObject config = fileHandler.readJSON(pathname);
         this.username = (String) getValue(config, "username");
         this.password = (String) getValue(config, "password");
     }
