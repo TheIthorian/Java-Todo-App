@@ -12,9 +12,8 @@ public class ConfigurationController implements IConfigurationController {
     public static String configurationFilePath = "config.json";
     public static IFileHandler fileHandler = FileHandler.newInstance();
 
-    public ConfigurationController() {
-        this.load();
-    }
+    // Nothing should happen in the constructor until a dependency class is made
+    public ConfigurationController() {}
 
     public void setUsername(String username) {
         this.username = username != null ? username : this.username;
