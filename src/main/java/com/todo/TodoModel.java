@@ -58,7 +58,6 @@ public class TodoModel {
         statement.setInt(3, this.todoId);
         statement.setInt(4, userId);
         statement.executeUpdate();
-        conn.commit();
         conn.close();
     }
 
@@ -69,9 +68,8 @@ public class TodoModel {
         PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, this.title);
         statement.setString(2, this.description);
-        statement.setInt(2, userId);
+        statement.setInt(3, userId);
         statement.executeUpdate();
-        conn.commit();
 
         ResultSet result = statement.getGeneratedKeys();
         result.next();
@@ -86,6 +84,5 @@ public class TodoModel {
         Statement statement = conn.createStatement();
         statement.execute(createTodo);
         statement.close();
-        conn.commit();
     }
 }
