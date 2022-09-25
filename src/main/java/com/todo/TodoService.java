@@ -8,7 +8,8 @@ public class TodoService implements ITodoService {
         try {
             todo.insert(user.getId());
         } catch (SQLException e) {
-            System.out.println("Unable to add todo item: " + e.getErrorCode());
+            System.out.println("Unable to add todo item: " + e.getMessage());
+            e.printStackTrace();
         }
         return todo;
     }
@@ -23,7 +24,8 @@ public class TodoService implements ITodoService {
             todo.description = newDescription == null ? todo.description : newDescription;
             todo.update(userId);
         } catch (SQLException e) {
-            System.out.println("Unable to add todo item: " + e.getErrorCode());
+            System.out.println("Unable to add todo item: " + e.getMessage());
+            e.printStackTrace();
         } catch (Database.RecordNotFoundException e) {
             System.out.println("Unable to find todo item to update");
         }

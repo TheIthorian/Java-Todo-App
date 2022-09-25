@@ -8,7 +8,7 @@ public class UserAuthenticator {
             return User.isPasswordCorrect(configurationController.getUsername(),
                     configurationController.getPassword());
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
             return false;
         }
     }
