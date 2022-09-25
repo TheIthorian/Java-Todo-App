@@ -1,10 +1,10 @@
 package com.todo;
 
 public class TodoController {
-    public IArgumentParser argumentParser = new ArgumentParser();
-    public IInputHandler inputHandler = new InputHandler();
-    public ITodoService todoService = new TodoService();
-    public IConfigurationController configurationController = new ConfigurationController();
+    public static IArgumentParser argumentParser = new ArgumentParser();
+    public static IInputHandler inputHandler = new InputHandler();
+    public static ITodoService todoService = new TodoService();
+    public static IConfigurationController configurationController = new ConfigurationController();
 
     public TodoController() {}
 
@@ -16,25 +16,26 @@ public class TodoController {
 
         this.handleNoOperation(arguments);
 
-        this.inputHandler.awaitInput("Prees enter to close...");
+        inputHandler.awaitInput("Prees enter to close...");
     }
 
     private void handleConfigurationOperation(ArgumentCollection arguments) {
         if (arguments.contains("-cf")) {
-            this.configurationController.setUsername(arguments.get("username"));
-            this.configurationController.setPassword(arguments.get("password"));
-            this.configurationController.saveToFile();
+            configurationController.load();
+            configurationController.setUsername(arguments.get("username"));
+            configurationController.setPassword(arguments.get("password"));
+            configurationController.saveToFile();
         }
     }
 
     private void handleTodoOperation(ArgumentCollection arguments) {
         if (arguments.contains("-a")) {
-            this.todoService.addTodo(arguments.get("title"), arguments.get("description"));
+            todoService.addTodo(arguments.get("title"), arguments.get("description"));
         } else if (arguments.contains("-u")) {
-            this.todoService.updateTodo(arguments.get("title"), arguments.get("newTitle"),
+            todoService.updateTodo(arguments.get("title"), arguments.get("newTitle"),
                     arguments.get("description"));
         } else if (arguments.contains("-d")) {
-            this.todoService.deleteTodo(arguments.get("title"));
+            todoService.deleteTodo(arguments.get("title"));
         }
     }
 
