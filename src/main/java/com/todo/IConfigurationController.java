@@ -5,9 +5,13 @@ public interface IConfigurationController {
 
     public void setPassword(String password);
 
+    public void setDatabaseLocation(String databaseLocation);
+
     public String getUsername();
 
     public String getPassword();
+
+    public String getDatabaseLocation();
 
     public void saveToFile();
 
