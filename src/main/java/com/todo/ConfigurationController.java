@@ -13,7 +13,7 @@ public class ConfigurationController implements IConfigurationController {
     public static IFileHandler fileHandler = FileHandler.newInstance();
 
     public ConfigurationController() {
-        this.load(configurationFilePath);
+        this.load();
     }
 
     public void setUsername(String username) {
@@ -43,12 +43,8 @@ public class ConfigurationController implements IConfigurationController {
     }
 
     public void load() {
-        load(configurationFilePath);
-    }
-
-    public void load(String pathname) {
         System.out.println("Loading configuration from file...");
-        JSONObject config = fileHandler.readJSON(pathname);
+        JSONObject config = fileHandler.readJSON(configurationFilePath);
         this.username = (String) getValue(config, "username");
         this.password = (String) getValue(config, "password");
     }

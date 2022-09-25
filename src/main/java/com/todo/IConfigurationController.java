@@ -11,5 +11,5 @@ public interface IConfigurationController {
 
     public void saveToFile();
 
-    public void load(String pathname);
+    public void load();
 }
