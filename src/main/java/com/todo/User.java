@@ -10,6 +10,12 @@ public class User {
     private int userId;
     public String username;
     public String password;
+    public boolean isAuthenticated = false;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public User(int userId, String username, String password) {
         this.userId = userId;
@@ -21,50 +27,74 @@ public class User {
         return this.userId;
     }
 
-    public static User makeUser(String username, String password) throws SecurityException {
-        User user = null;
-        try {
-            if (isPasswordCorrect(username, password)) {
-                user = getByUsername(username);
-            } else {
-                throw new SecurityException("Password not valid");
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        } catch (Database.RecordNotFoundException e) {
-            throw new SecurityException("Password not valid");
-        }
-
-        return user;
+    public boolean isPasswordCorrect() throws SQLException {
+        return isPasswordCorrect(this.username, this.password);
     }
 
     public static boolean isPasswordCorrect(String username, String password) throws SQLException {
-        String query = "SELECT username, password FROM users WHERE username ? AND password = ?";
+        String query = "SELECT username, password FROM users WHERE username = ? AND password = ?";
 
         Connection conn = Database.connect();
         PreparedStatement statement = conn.prepareStatement(query);
         statement.setString(1, username);
+        statement.setString(2, password);
         ResultSet result = statement.executeQuery();
         conn.close();
         return result.next();
     }
 
-    private static User getByUsername(String username)
-            throws SQLException, Database.RecordNotFoundException {
-        String query = "SELECT userId, username, password FROM Users WHERE username = ?";
+    public static User getByUsernamePassword(String username, String password) throws SQLException {
+        String query =
+                "SELECT userId, username, password FROM Users WHERE username = ? AND password = ?";
 
         Connection conn = Database.connect();
         PreparedStatement statement = conn.prepareStatement(query);
         statement.setString(1, username);
+        statement.setString(2, password);
         ResultSet result = statement.executeQuery();
+
+        result.next();
+        final User user = new User(result.getInt("userId"), result.getString("username"),
+                result.getString("password"));
+
         conn.close();
 
-        if (result.next()) {
-            return new User(result.getInt("userId"), result.getString("username"),
-                    result.getString("password"));
-        } else {
-            throw new Database.RecordNotFoundException();
+        return user;
+
+    }
+
+    public void insert() throws SQLException {
+        String query = "INSERT INTO users (username, password) VALUES (?, ?)";
+
+        Connection conn = Database.connect();
+        PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, this.username);
+        statement.setString(2, this.password);
+        statement.executeUpdate();
+
+        ResultSet result = statement.getGeneratedKeys();
+        result.next();
+        this.userId = result.getInt(1);
+        conn.close();
+
+        this.isAuthenticated = true;
+    }
+
+    public static boolean usernameExists(String username) {
+        try {
+            String query = "SELECT 1 FROM Users WHERE username = ?";
+
+            Connection conn = Database.connect();
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, username);
+            statement.executeQuery();
+            ResultSet result = statement.getGeneratedKeys();
+            return result.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
         }
+
     }
 
     public static void createTable(Connection conn) throws SQLException {
@@ -74,7 +104,6 @@ public class User {
         Statement statement = conn.createStatement();
         statement.execute(createUsers);
         statement.close();
-        conn.commit();
     }
 
 }
