@@ -32,13 +32,25 @@ public class TodoController {
     }
 
     private void handleTodoOperation(ArgumentCollection arguments) {
+        if (!configurationValidator.isValid(configurationController)) {
+            return;
+        }
+
+        if (!userAuthenticator.areCredentialsCorrect(configurationController)) {
+            System.out.println("Credentials not recognised.");
+            return;
+        }
+
+        final User user = User.makeUser(configurationController.getUsername(),
+                configurationController.getPassword());
+
         if (arguments.contains("-a")) {
-            todoService.addTodo(arguments.get("title"), arguments.get("description"));
+            todoService.addTodo(arguments.get("title"), arguments.get("description"), user);
         } else if (arguments.contains("-u")) {
             todoService.updateTodo(arguments.get("title"), arguments.get("newTitle"),
-                    arguments.get("description"));
+                    arguments.get("description"), user);
         } else if (arguments.contains("-d")) {
-            todoService.deleteTodo(arguments.get("title"));
+            todoService.deleteTodo(arguments.get("title"), user);
         }
     }
 
