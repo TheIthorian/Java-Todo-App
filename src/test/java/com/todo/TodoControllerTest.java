@@ -47,7 +47,7 @@ public class TodoControllerTest {
         controller.run(args);
 
         // Then
-        Mockito.verify(mockConfigurationController, Mockito.never()).load();
+        Mockito.verify(mockConfigurationController).load();
         Mockito.verify(mockConfigurationController, Mockito.never())
                 .setUsername(Mockito.anyString());
         Mockito.verify(mockConfigurationController, Mockito.never())
