@@ -8,6 +8,7 @@ public class ConfigurationController implements IConfigurationController {
 
     private String username = null;
     private String password = null;
+    private String databaseLocation = null;
 
     public static String configurationFilePath = "config.json";
     public static IFileHandler fileHandler = FileHandler.newInstance();
@@ -23,12 +24,20 @@ public class ConfigurationController implements IConfigurationController {
         this.password = password != null ? password : this.password;
     }
 
+    public void setDatabaseLocation(String databaseLocation) {
+        this.databaseLocation = databaseLocation != null ? databaseLocation : this.databaseLocation;
+    }
+
     public String getUsername() {
         return this.username;
     }
 
     public String getPassword() {
         return this.password;
+    }
+
+    public String getDatabaseLocation() {
+        return this.databaseLocation;
     }
 
     public void saveToFile() {
