@@ -8,6 +8,8 @@ public class TodoController {
     public static IInputHandler inputHandler = new InputHandler();
     public static ITodoService todoService = new TodoService();
     public static IConfigurationController configurationController = new ConfigurationController();
+    public static ConfigurationValidator configurationValidator = new ConfigurationValidator();
+    public static UserAuthenticator userAuthenticator = new UserAuthenticator();
 
     public TodoController() {}
 
