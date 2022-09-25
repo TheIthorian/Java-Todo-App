@@ -1,5 +1,6 @@
 package com.todo;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +46,7 @@ public class ConfigurationController implements IConfigurationController {
         HashMap<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("username", this.username);
         dataMap.put("password", this.password);
+        dataMap.put("databaseLocation", this.databaseLocation);
 
         JSONObject data = new JSONObject(dataMap);
         fileHandler.writeJSON(configurationFilePath, data);
@@ -55,6 +57,31 @@ public class ConfigurationController implements IConfigurationController {
         JSONObject config = fileHandler.readJSON(configurationFilePath);
         this.username = (String) getValue(config, "username");
         this.password = (String) getValue(config, "password");
+        this.databaseLocation = (String) getValue(config, "databaseLocation");
+    }
+
+    public void addNewUser(String username, String password) {
+        if (username == null) {
+            System.out.println("Please provide a username for the new user.");
+            return;
+        }
+
+        if (password == null) {
+            System.out.println("Please provide a password for the new user.");
+            return;
+        }
+
+        if (User.usernameExists(username)) {
+            System.out.println("Username already exists.");
+            return;
+        }
+
+        try {
+            User newUser = new User(username, password);
+            newUser.insert();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private Object getValue(JSONObject config, String key) {

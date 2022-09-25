@@ -13,6 +13,8 @@ public interface IConfigurationController {
 
     public String getDatabaseLocation();
 
+    public void addNewUser(String username, String password);
+
     public void saveToFile();
 
     public void load();
