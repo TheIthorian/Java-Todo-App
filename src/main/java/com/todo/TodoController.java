@@ -1,5 +1,7 @@
 package com.todo;
 
+import java.sql.SQLException;
+
 // https://www.oracle.com/java/technologies/javase/javadoc-tool.html
 // https://www.baeldung.com/mockito-verify
 
@@ -15,8 +17,12 @@ public class TodoController {
 
     public void run(String[] args) {
         ArgumentCollection arguments = argumentParser.readArgs(args);
+        configurationController.load();
+
+        this.buildDatabase();
 
         this.handleConfigurationOperation(arguments);
+
         this.handleTodoOperation(arguments);
 
         this.handleNoOperation(arguments);
@@ -24,16 +30,31 @@ public class TodoController {
         inputHandler.awaitInput("Prees enter to close...");
     }
 
+    private void buildDatabase() {
+        if (!Database.alreadyExists()) {
+            Database.createTables();
+        }
+    }
+
     private void handleConfigurationOperation(ArgumentCollection arguments) {
         if (arguments.contains("-cf")) {
-            configurationController.load();
             configurationController.setUsername(arguments.get("username"));
             configurationController.setPassword(arguments.get("password"));
+            configurationController.setDatabaseLocation(arguments.get("db"));
             configurationController.saveToFile();
+        }
+
+        if (arguments.contains("-ca")) {
+            configurationController.addNewUser(arguments.get("username"),
+                    arguments.get("password"));
         }
     }
 
     private void handleTodoOperation(ArgumentCollection arguments) {
+        if (!arguments.contains("-a") && !arguments.contains("-u") && !arguments.contains("-d")) {
+            return;
+        }
+
         if (!configurationValidator.isValid(configurationController)) {
             return;
         }
@@ -43,8 +64,14 @@ public class TodoController {
             return;
         }
 
-        final User user = User.makeUser(configurationController.getUsername(),
-                configurationController.getPassword());
+        User user = null;
+        try {
+            user = User.getByUsernamePassword(configurationController.getUsername(),
+                    configurationController.getPassword());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
 
         if (arguments.contains("-a")) {
             todoService.addTodo(arguments.get("title"), arguments.get("description"), user);
