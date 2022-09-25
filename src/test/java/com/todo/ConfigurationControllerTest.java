@@ -37,6 +37,7 @@ public class ConfigurationControllerTest {
 
         // When
         ConfigurationController configurationController = new ConfigurationController();
+        configurationController.load();
 
         // Then
         assertEquals(existingUsername, configurationController.getUsername());
@@ -53,6 +54,7 @@ public class ConfigurationControllerTest {
 
         // When
         ConfigurationController configurationController = new ConfigurationController();
+        configurationController.load();
 
         // Then
         assertNull(configurationController.getUsername());
@@ -135,7 +137,6 @@ public class ConfigurationControllerTest {
         configurationController.saveToFile();
 
         // Then
-        Mockito.verify(mockFileHandler, Mockito.times(1)).readJSON("config.json");
         // Identical JSONObjects are not equal so cannot test against `expectedData`...
         Mockito.verify(mockFileHandler, Mockito.times(1)).writeJSON(anyString(),
                 any(JSONObject.class));
