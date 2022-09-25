@@ -8,7 +8,7 @@ public class ConfigurationValidator {
         }
         if (configurationController.getUsername() == null
                 || configurationController.getPassword() == null) {
-            System.out.println("No database location is specified in config.json.");
+            System.out.println("No password or username is specified.");
             return false;
         }
         return true;
