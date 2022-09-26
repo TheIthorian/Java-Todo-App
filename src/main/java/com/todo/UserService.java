@@ -14,4 +14,20 @@ public class UserService {
             e.printStackTrace();
         }
     }
+
+    static User getUser(Database database, String username, String password) {
+        System.out.println("getUser: " + username + " " + password);
+        try {
+            Connection conn = database.connect();
+            UserSelector userSelector = new UserSelector(conn);
+            User user = User.getByUsernamePassword(userSelector, username, password);
+            conn.close();
+            return user;
+        } catch (SQLException e) {
+            System.out.print("Unable to get user " + username);
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
