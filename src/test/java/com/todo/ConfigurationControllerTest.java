@@ -25,7 +25,6 @@ public class ConfigurationControllerTest {
 
     private static void setup() {
         mockFileHandler = Mockito.mock(FileHandler.class);
-        ConfigurationController.fileHandler = mockFileHandler;
         Mockito.when(mockFileHandler.readJSON("config.json"))
                 .thenReturn(formatToJSON(existingUsername, existingPassword));
     }
@@ -36,7 +35,8 @@ public class ConfigurationControllerTest {
         setup();
 
         // When
-        ConfigurationController configurationController = new ConfigurationController();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockFileHandler);
         configurationController.load();
 
         // Then
@@ -53,7 +53,8 @@ public class ConfigurationControllerTest {
         Mockito.when(mockFileHandler.readJSON("config.json")).thenReturn(new JSONObject());
 
         // When
-        ConfigurationController configurationController = new ConfigurationController();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockFileHandler);
         configurationController.load();
 
         // Then
@@ -68,7 +69,8 @@ public class ConfigurationControllerTest {
         setup();
         String newUsername = "my_new_username";
 
-        ConfigurationController configurationController = new ConfigurationController();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockFileHandler);
 
         // When
         configurationController.setUsername(newUsername);
@@ -82,7 +84,8 @@ public class ConfigurationControllerTest {
         setup();
         String newUsername = null;
 
-        ConfigurationController configurationController = new ConfigurationController();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockFileHandler);
 
         // When
         configurationController.setUsername(newUsername);
@@ -97,7 +100,8 @@ public class ConfigurationControllerTest {
         setup();
         String newPassword = "my_new_password";
 
-        ConfigurationController configurationController = new ConfigurationController();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockFileHandler);
 
         // When
         configurationController.setPassword(newPassword);
@@ -111,7 +115,8 @@ public class ConfigurationControllerTest {
         setup();
         String newPassword = null;
 
-        ConfigurationController configurationController = new ConfigurationController();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockFileHandler);
 
         // When
         configurationController.setPassword(newPassword);
@@ -129,7 +134,8 @@ public class ConfigurationControllerTest {
 
         // final JSONObject expectedData = formatToJSON(newUsername, newPassword);
 
-        ConfigurationController configurationController = new ConfigurationController();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockFileHandler);
 
         // When
         configurationController.setUsername(newUsername);
