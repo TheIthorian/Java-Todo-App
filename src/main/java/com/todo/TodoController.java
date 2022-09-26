@@ -1,6 +1,7 @@
 package com.todo;
 
 import java.sql.SQLException;
+import com.todo.models.User;
 
 // https://www.oracle.com/java/technologies/javase/javadoc-tool.html
 // https://www.baeldung.com/mockito-verify

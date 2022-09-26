@@ -1,5 +1,8 @@
 package com.todo;
 
+import com.todo.models.TodoModel;
+import com.todo.models.User;
+
 public interface ITodoService {
     public TodoModel addTodo(String title, String description, User user);
 

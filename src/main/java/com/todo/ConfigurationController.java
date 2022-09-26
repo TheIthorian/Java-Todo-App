@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.todo.models.User;
 
 public class ConfigurationController implements IConfigurationController {
 

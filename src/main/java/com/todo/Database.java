@@ -3,6 +3,8 @@ package com.todo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import com.todo.models.TodoModel;
+import com.todo.models.User;
 
 public class Database {
     private static final String databaseFileName = "todo.db";

@@ -1,6 +1,8 @@
 package com.todo;
 
 import java.sql.SQLException;
+import com.todo.models.TodoModel;
+import com.todo.models.User;
 
 public class TodoService implements ITodoService {
     public TodoModel addTodo(String title, String description, User user) {
