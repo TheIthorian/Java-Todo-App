@@ -12,6 +12,11 @@ public class User extends UserSelector.UserDto {
         this.isAuthenticated = false;
     }
 
+    User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     int getId() {
         return this.userId;
     }
@@ -33,11 +38,13 @@ public class User extends UserSelector.UserDto {
         selector.insert(this);
     }
 
-    static boolean isPasswordCorrect(UserSelector selector, String username, String password) {
+    public static boolean isPasswordCorrect(UserSelector selector, String username,
+            String password) {
         return (selector.selectByUsernamePassword(username, password) == null);
     }
 
-    static User getByUsernamePassword(UserSelector selector, String username, String password) {
+    public static User getByUsernamePassword(UserSelector selector, String username,
+            String password) {
         UserSelector.UserDto user = selector.selectByUsernamePassword(username, password);
         if (user != null) {
             return new User(user);
@@ -45,11 +52,11 @@ public class User extends UserSelector.UserDto {
         return null;
     }
 
-    static boolean usernameExists(UserSelector selector, String username) {
+    public static boolean usernameExists(UserSelector selector, String username) {
         return selector.selectByUsername(username) != null;
     }
 
-    static void createTable(Connection conn) throws SQLException {
+    public static void createTable(Connection conn) throws SQLException {
         String createUsers = "CREATE TABLE IF NOT EXISTS users "
                 + "(userId integer PRIMARY KEY, username text NOT NULL, password text NOT NULL)";
 
