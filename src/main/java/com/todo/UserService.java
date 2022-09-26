@@ -1,5 +1,6 @@
 package com.todo;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import com.todo.models.User;
 import com.todo.models.UserSelector;
@@ -7,7 +8,8 @@ import com.todo.models.UserSelector;
 public class UserService {
     static void addUser(Database database, String username, String password) {
         try {
-            UserSelector userSelector = new UserSelector(database.connect());
+            Connection conn = database.connect();
+            UserSelector userSelector = new UserSelector(conn);
             User.addUser(userSelector, username, password);
             conn.close();
         } catch (SQLException e) {
