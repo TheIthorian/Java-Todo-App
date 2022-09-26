@@ -1,16 +1,31 @@
 package com.todo;
 
+import java.util.HashMap;
+
 public class ConfigurationValidator {
-    public boolean isValid(IConfigurationController configurationController) {
+
+    private String NOT_DEFINED = "is not specified in config.json.";
+    private HashMap<String, String> errors = new HashMap<String, String>();
+
+    private void printErrors() {
+        for (String key : errors.keySet()) {
+            System.out.println("Error: " + key + " " + NOT_DEFINED);
+        }
+    }
+
+    public boolean isValid(ConfigurationController configurationController) {
         if (configurationController.getDatabaseLocation() == null) {
-            System.out.println("No database location is specified in config.json.");
-            return false;
+            errors.put("databaseLocation", NOT_DEFINED);
         }
-        if (configurationController.getUsername() == null
-                || configurationController.getPassword() == null) {
-            System.out.println("No password or username is specified.");
-            return false;
+        if (configurationController.getUsername() == null) {
+            errors.put("username", NOT_DEFINED);
         }
-        return true;
+        if (configurationController.getPassword() == null) {
+            errors.put("password", NOT_DEFINED);
+        }
+
+        printErrors();
+
+        return errors.isEmpty();
     }
 }
