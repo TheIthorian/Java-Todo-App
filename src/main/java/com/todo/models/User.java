@@ -17,24 +17,24 @@ public class User extends UserSelector.UserDto {
         this.password = password;
     }
 
-    int getId() {
+    public int getId() {
         return this.userId;
     }
 
-    boolean isAuthenticated() {
+    public boolean isAuthenticated() {
         return this.isAuthenticated;
     }
 
-    boolean authenticate() {
+    public boolean authenticate() {
         this.isAuthenticated = true;
         return this.isAuthenticated;
     }
 
-    boolean isPasswordCorrect(UserSelector selector) {
+    public boolean isPasswordCorrect(UserSelector selector) {
         return isPasswordCorrect(selector, this.username, this.password);
     }
 
-    void insert(UserSelector selector) throws SQLException {
+    public void insert(UserSelector selector) {
         selector.insert(this);
     }
 
