@@ -7,21 +7,22 @@ import com.todo.models.TodoModel;
 import com.todo.models.User;
 
 public class Database {
-    private static final String databaseFileName = "todo.db";
-    private static String cachedDatabaseUrl = null;
+    private String cachedDatabaseUrl = null;
+    private DatabaseConfiguration configuration;
+    private IFileHandler fileHandler;
 
-    public static IConfigurationController configurationController = new ConfigurationController();
-    public static IFileHandler fileHandler = new FileHandler();
+    static class RecordNotFoundException extends Exception {};
 
-    public static class RecordNotFoundException extends Exception {};
-
-    public Database() {}
-
-    public static boolean alreadyExists() {
-        return fileHandler.exists(getDatabaseUrl());
+    Database(DatabaseConfiguration configuration, FileHandler fileHandler) {
+        this.configuration = configuration;
+        this.fileHandler = fileHandler;
     }
 
-    public static void createTables() {
+    public boolean alreadyExists() {
+        return fileHandler.exists(this.getDatabaseUrl());
+    }
+
+    public void createTables() {
         System.out.println("Creating database...");
         try {
             Connection conn = connect();
@@ -33,17 +34,16 @@ public class Database {
         }
     }
 
-    public static Connection connect() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:" + getDatabaseUrl());
+    public Connection connect() throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:" + this.getDatabaseUrl());
     }
 
-    private static String getDatabaseUrl() {
+    private String getDatabaseUrl() {
         if (cachedDatabaseUrl != null) {
             return cachedDatabaseUrl;
         }
 
-        configurationController.load();
-        cachedDatabaseUrl = configurationController.getDatabaseLocation() + databaseFileName;
+        cachedDatabaseUrl = configuration.databaseLocation + configuration.databaseFileName;;
         return cachedDatabaseUrl;
     }
 }
