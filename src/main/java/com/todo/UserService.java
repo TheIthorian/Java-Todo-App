@@ -9,6 +9,7 @@ public class UserService {
         try {
             UserSelector userSelector = new UserSelector(database.connect());
             User.addUser(userSelector, username, password);
+            conn.close();
         } catch (SQLException e) {
             System.out.print("Unable to add new user:");
             e.printStackTrace();
