@@ -58,6 +58,9 @@ public class ConfigurationController {
         fileHandler.writeJSON(configurationFilePath, data);
     }
 
+    /**
+     * Load configuration from the default location - config.json
+     */
     public void load() {
         System.out.println("Loading configuration from file...");
         JSONObject config = fileHandler.readJSON(configurationFilePath);
