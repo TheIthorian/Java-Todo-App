@@ -43,6 +43,10 @@ public class ConfigurationController {
         return databaseLocation;
     }
 
+    public DatabaseConfiguration getDatabaseConfiguration() {
+        return new DatabaseConfiguration(databaseLocation, "todo.db");
+    }
+
     public void saveToFile() {
         System.out.println("Saving configuration to file...");
         HashMap<String, String> dataMap = new HashMap<String, String>();
