@@ -1,89 +1,52 @@
 package com.todo.models;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import com.todo.Database;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TodoModel {
-    private int todoId;
-    public String title;
-    public String description;
-    public int userId;
-
-    public TodoModel(int todoId, String title, String description, int userId) {
-        this.todoId = todoId;
-        this.title = title;
-        this.description = description;
-        this.userId = userId;
-    }
-
+public class TodoModel extends TodoSelector.TodoDto {
     public TodoModel(String title, String description, User user) {
         this.title = title;
         this.description = description;
         this.userId = user.getId();
     }
 
+    public TodoModel(TodoSelector.TodoDto todo) {
+        super(todo);
+    }
+
     public int getId() {
         return this.todoId;
     }
 
-    public static TodoModel getByTitle(String title, int userId)
-            throws Database.RecordNotFoundException, SQLException {
-        String query = "SELECT todoId, title, description FROM todo WHERE title = ? AND userId = ?";
+    public void insert(TodoSelector selector) throws SQLException {
+        selector.insert(this);
+    }
 
-        Connection conn = Database.connect();
-        PreparedStatement statement = conn.prepareStatement(query);
-        statement.setString(1, title);
-        statement.setInt(2, userId);
-        ResultSet result = statement.executeQuery();
-        conn.close();
+    public void update(TodoSelector selector) throws SQLException {
+        selector.update(this);
+    }
 
-        if (result.next()) {
-            return new TodoModel(result.getInt("todoId"), result.getString("description"),
-                    result.getString("description"), userId);
-        } else {
-            throw new Database.RecordNotFoundException();
+    public static List<TodoModel> getByTitle(TodoSelector selector, String title) {
+        final List<TodoSelector.TodoDto> todoItems = selector.selectByTitle(title);
+
+        final List<TodoModel> output = new ArrayList<TodoModel>();
+        for (TodoSelector.TodoDto todoItem : todoItems) {
+            output.add((TodoModel) new TodoModel(todoItem));
         }
-    }
 
-    public void update(int userId) throws SQLException {
-        String query = "UPDATE todo SET title = ?, description = ? WHERE todoId = ? userId = ?";
-
-        Connection conn = Database.connect();
-        PreparedStatement statement = conn.prepareStatement(query);
-        statement.setString(1, this.title);
-        statement.setString(2, this.description);
-        statement.setInt(3, this.todoId);
-        statement.setInt(4, userId);
-        statement.executeUpdate();
-        conn.close();
-    }
-
-    public void insert(int userId) throws SQLException {
-        String query = "INSERT INTO todo (title, description, userId) VALUES (?, ?, ?)";
-
-        Connection conn = Database.connect();
-        PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        statement.setString(1, this.title);
-        statement.setString(2, this.description);
-        statement.setInt(3, userId);
-        statement.executeUpdate();
-
-        ResultSet result = statement.getGeneratedKeys();
-        result.next();
-        this.todoId = result.getInt(1);
-        conn.close();
+        return output;
     }
 
     public static void createTable(Connection conn) throws SQLException {
-        String createTodo = "CREATE TABLE IF NOT EXISTS todo ("
+        final String createTodo = "CREATE TABLE IF NOT EXISTS todo ("
                 + "id integer PRIMARY KEY, title text NTO NULL, description text, userId integer REFERENCES users (userId))";
 
-        Statement statement = conn.createStatement();
+        final Statement statement = conn.createStatement();
         statement.execute(createTodo);
         statement.close();
+        conn.close();
     }
 }
