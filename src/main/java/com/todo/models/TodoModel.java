@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import com.todo.Database;
-import com.todo.Database.RecordNotFoundException;
 
 public class TodoModel {
     private int todoId;
