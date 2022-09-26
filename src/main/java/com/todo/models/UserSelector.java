@@ -36,7 +36,7 @@ public class UserSelector {
         }
     }
 
-    UserSelector(Connection conn) {
+    public UserSelector(Connection conn) {
         this.conn = conn;
     }
 
