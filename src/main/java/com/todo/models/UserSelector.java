@@ -12,8 +12,8 @@ public class UserSelector {
 
     public static class UserDto {
         protected int userId;
-        String username;
-        String password;
+        public String username;
+        public String password;
 
         UserDto() {}
 
