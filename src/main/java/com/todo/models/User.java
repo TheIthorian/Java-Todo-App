@@ -58,4 +58,13 @@ public class User extends UserSelector.UserDto {
         statement.close();
     }
 
+    public static User addUser(UserSelector selector, String username, String password) {
+        if (usernameExists(selector, username)) {
+            System.out.println("Username already exists.");
+            return null;
+        }
+
+        User newUser = new User(username, password);
+        return new User(selector.insert(newUser));
+    }
 }
