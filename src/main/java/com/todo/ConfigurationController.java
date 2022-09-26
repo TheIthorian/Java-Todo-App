@@ -11,12 +11,13 @@ public class ConfigurationController implements IConfigurationController {
     private String username = null;
     private String password = null;
     private String databaseLocation = null;
+    private IFileHandler fileHandler;
 
-    public static String configurationFilePath = "config.json";
-    public static IFileHandler fileHandler = FileHandler.newInstance();
+    static final String configurationFilePath = "config.json";
 
-    // Nothing should happen in the constructor until a dependency class is made
-    public ConfigurationController() {}
+    public ConfigurationController(IFileHandler fileHandler) {
+        this.fileHandler = fileHandler;
+    }
 
     public void setUsername(String username) {
         this.username = username != null ? username : this.username;
