@@ -46,9 +46,9 @@ public class ConfigurationController {
     public void saveToFile() {
         System.out.println("Saving configuration to file...");
         HashMap<String, String> dataMap = new HashMap<String, String>();
-        dataMap.put("username", this.username);
-        dataMap.put("password", this.password);
-        dataMap.put("databaseLocation", this.databaseLocation);
+        dataMap.put("username", username);
+        dataMap.put("password", password);
+        dataMap.put("databaseLocation", databaseLocation);
 
         JSONObject data = new JSONObject(dataMap);
         fileHandler.writeJSON(configurationFilePath, data);
