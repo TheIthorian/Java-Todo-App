@@ -42,7 +42,7 @@ public class UserSelector {
 
     UserDto selectByUsernamePassword(String username, String password) {
         UserDto user = selectByUsername(username);
-        if (user.password == password) {
+        if (user.password.equals(password)) {
             return user;
         }
         return null;
