@@ -9,17 +9,17 @@ import com.todo.models.User;
 public class Database {
     private String cachedDatabaseUrl = null;
     private DatabaseConfiguration configuration;
-    private IFileHandler fileHandler;
+    private IResourceHandler resourceHandler;
 
     static class RecordNotFoundException extends Exception {};
 
-    Database(DatabaseConfiguration configuration, FileHandler fileHandler) {
+    Database(DatabaseConfiguration configuration, IResourceHandler resourceHandler) {
         this.configuration = configuration;
-        this.fileHandler = fileHandler;
+        this.resourceHandler = resourceHandler;
     }
 
     public boolean alreadyExists() {
-        return fileHandler.exists(this.getDatabaseUrl());
+        return resourceHandler.exists(this.getDatabaseUrl());
     }
 
     public void createTables() {

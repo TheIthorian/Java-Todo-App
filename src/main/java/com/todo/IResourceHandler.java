@@ -3,7 +3,7 @@ package com.todo;
 import java.util.Scanner;
 import org.json.JSONObject;
 
-public interface IFileHandler {
+public interface IResourceHandler {
     public boolean exists(String pathname);
 
     public void create(String pathname);

@@ -9,11 +9,11 @@ public class ConfigurationController {
     private String username = null;
     private String password = null;
     private String databaseLocation = null;
-    private IFileHandler fileHandler;
+    private IResourceHandler fileHandler;
 
     static final String configurationFilePath = "config.json";
 
-    public ConfigurationController(IFileHandler fileHandler) {
+    public ConfigurationController(IResourceHandler fileHandler) {
         this.fileHandler = fileHandler;
     }
 

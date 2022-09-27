@@ -8,7 +8,7 @@ import com.todo.models.User;
 public class AppController {
     public static IArgumentParser argumentParser = new ArgumentParser();
     public static IInputHandler inputHandler = new InputHandler();
-    public static FileHandler fileHandler = new FileHandler();
+    public static IResourceHandler fileHandler = new FileHandler();
 
     public static ConfigurationController configurationController =
             new ConfigurationController(fileHandler);

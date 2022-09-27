@@ -8,7 +8,7 @@ import java.util.Scanner;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class FileHandler implements IFileHandler {
+public class FileHandler implements IResourceHandler {
 
     public FileHandler() {}
 
