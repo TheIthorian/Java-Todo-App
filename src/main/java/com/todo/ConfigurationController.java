@@ -9,12 +9,12 @@ public class ConfigurationController {
     private String username = null;
     private String password = null;
     private String databaseLocation = null;
-    private IResourceHandler fileHandler;
+    private IResourceHandler resourceHandler;
 
     static final String configurationFilePath = "config.json";
 
-    public ConfigurationController(IResourceHandler fileHandler) {
-        this.fileHandler = fileHandler;
+    public ConfigurationController(IResourceHandler resourceHandler) {
+        this.resourceHandler = resourceHandler;
     }
 
     public void setUsername(String username) {
@@ -53,7 +53,7 @@ public class ConfigurationController {
         dataMap.put("databaseLocation", databaseLocation);
 
         JSONObject data = new JSONObject(dataMap);
-        fileHandler.writeJSON(configurationFilePath, data);
+        resourceHandler.writeJSON(configurationFilePath, data);
     }
 
     /**
@@ -61,7 +61,7 @@ public class ConfigurationController {
      */
     public void load() {
         System.out.println("Loading configuration from file...");
-        JSONObject config = fileHandler.readJSON(configurationFilePath);
+        JSONObject config = resourceHandler.readJSON(configurationFilePath);
         username = (String) getValue(config, "username");
         password = (String) getValue(config, "password");
         databaseLocation = (String) getValue(config, "databaseLocation");
