@@ -7,14 +7,14 @@ import java.sql.Statement;
 public class User extends UserSelector.UserDto {
     private boolean isAuthenticated = false;
 
-    User(UserSelector.UserDto user) {
-        super(user);
-        this.isAuthenticated = false;
-    }
-
-    User(String username, String password) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    private User(UserSelector.UserDto user) {
+        super(user);
+        this.isAuthenticated = false;
     }
 
     public int getId() {
