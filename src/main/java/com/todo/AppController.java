@@ -11,7 +11,10 @@ import com.todo.models.User;
 public class AppController {
     public static ArgumentParser argumentParser = new ArgumentParser();
     public static IInputHandler inputHandler = new InputHandler();
+
     public static IResourceHandler fileHandler = new FileHandler();
+
+    public static IUserAuthenticator userAuthenticator = new UserAuthenticator();
 
     public static ConfigurationController configurationController =
             new ConfigurationController(fileHandler);
@@ -79,7 +82,7 @@ public class AppController {
         User user = UserService.getUser(database, configurationController.getUsername(),
                 configurationController.getPassword());
 
-        if (user == null || !user.authenticate()) {
+        if (user == null || !user.authenticate(userAuthenticator)) {
             System.out.println("Credentials not recognised.");
             return;
         }
