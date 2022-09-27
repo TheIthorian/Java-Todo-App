@@ -55,7 +55,7 @@ public class AppController {
             configurationController.setUsername(arguments.get("username"));
             configurationController.setPassword(arguments.get("password"));
             configurationController.setDatabaseLocation(arguments.get("db"));
-            configurationController.saveToFile();
+            configurationController.save();
         }
 
         if (arguments.contains("-addUser")) {
