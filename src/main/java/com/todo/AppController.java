@@ -5,7 +5,7 @@ import com.todo.models.User;
 // https://www.oracle.com/java/technologies/javase/javadoc-tool.html
 // https://www.baeldung.com/mockito-verify
 
-public class TodoController {
+public class AppController {
     public static IArgumentParser argumentParser = new ArgumentParser();
     public static IInputHandler inputHandler = new InputHandler();
     public static FileHandler fileHandler = new FileHandler();
@@ -18,7 +18,7 @@ public class TodoController {
 
     public static Database database;
 
-    public TodoController() {}
+    public AppController() {}
 
     public void run(String[] args) {
         ArgumentCollection arguments = argumentParser.readArgs(args);
