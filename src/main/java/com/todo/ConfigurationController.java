@@ -11,7 +11,7 @@ public class ConfigurationController {
     private String databaseLocation = null;
     private IResourceHandler resourceHandler;
 
-    static final String configurationFilePath = "config.json";
+    public final String configurationFilePath = "config.json";
 
     public ConfigurationController(IResourceHandler resourceHandler) {
         this.resourceHandler = resourceHandler;
