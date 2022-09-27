@@ -46,63 +46,48 @@ public class TodoSelector {
         this.conn = conn;
     }
 
-    List<TodoDto> selectByTitle(String title) {
+    List<TodoDto> selectByTitle(String title) throws SQLException {
         String query = "SELECT todoId, title, description FROM todo WHERE title = ? AND userId = ?";
         List<TodoDto> output = new ArrayList<TodoDto>();
 
-        try {
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, title);
-            statement.setInt(2, user.userId);
-            ResultSet result = statement.executeQuery();
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setString(1, title);
+        statement.setInt(2, user.userId);
+        ResultSet result = statement.executeQuery();
 
-            while (result.next()) {
-                output.add(new TodoDto(result));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (result.next()) {
+            output.add(new TodoDto(result));
         }
 
         return output;
     }
 
-    TodoDto insert(TodoDto todo) {
+    TodoDto insert(TodoDto todo) throws SQLException {
         String query = "INSERT INTO todo (title, description, userId) VALUES (?, ?, ?)";
 
-        try {
-            PreparedStatement statement =
-                    conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, todo.title);
-            statement.setString(2, todo.description);
-            statement.setInt(3, user.userId);
-            statement.executeUpdate();
-            ResultSet result = statement.getGeneratedKeys();
+        PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, todo.title);
+        statement.setString(2, todo.description);
+        statement.setInt(3, user.userId);
+        statement.executeUpdate();
+        ResultSet result = statement.getGeneratedKeys();
 
-            if (result.next()) {
-                int todoId = result.getInt(1);
-                return new TodoDto(todoId, todo.title, todo.description, user.userId);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (result.next()) {
+            int todoId = result.getInt(1);
+            return new TodoDto(todoId, todo.title, todo.description, user.userId);
         }
 
         return todo;
     }
 
-    void update(TodoDto todo) {
+    void update(TodoDto todo) throws SQLException {
         String query = "UPDATE todo SET title = ?, description = ? WHERE todoId = ? AND userId = ?";
 
-        try {
-            PreparedStatement statement =
-                    conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, todo.title);
-            statement.setString(2, todo.description);
-            statement.setInt(3, todo.todoId);
-            statement.setInt(4, user.userId);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, todo.title);
+        statement.setString(2, todo.description);
+        statement.setInt(3, todo.todoId);
+        statement.setInt(4, user.userId);
+        statement.executeUpdate();
     }
 }

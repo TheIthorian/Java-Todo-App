@@ -29,7 +29,8 @@ public class TodoModel extends TodoSelector.TodoDto {
         selector.update(this);
     }
 
-    public static List<TodoModel> getByTitle(TodoSelector selector, String title) {
+    public static List<TodoModel> getByTitle(TodoSelector selector, String title)
+            throws SQLException {
         final List<TodoSelector.TodoDto> todoItems = selector.selectByTitle(title);
 
         final List<TodoModel> output = new ArrayList<TodoModel>();
