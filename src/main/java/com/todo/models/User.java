@@ -25,8 +25,8 @@ public class User extends UserSelector.UserDto {
         return this.isAuthenticated;
     }
 
-    public boolean authenticate() {
-        this.isAuthenticated = true;
+    public boolean authenticate(IUserAuthenticator authenticator) {
+        this.isAuthenticated = authenticator.authenticate(this);
         return this.isAuthenticated;
     }
 
