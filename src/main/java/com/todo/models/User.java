@@ -78,5 +78,4 @@ public class User extends UserSelector.UserDto {
         statement.execute(createUsers);
         statement.close();
     }
-
 }
