@@ -1,8 +1,10 @@
-package com.todo;
+package com.todo.controllers;
 
 import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.todo.DatabaseConfiguration;
+import com.todo.IResourceHandler;
 
 public class ConfigurationController {
 

@@ -1,6 +1,7 @@
 package com.todo;
 
 import java.util.HashMap;
+import com.todo.controllers.ConfigurationController;
 
 public class ConfigurationValidator {
 

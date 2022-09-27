@@ -1,7 +1,9 @@
-package com.todo;
+package com.todo.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import com.todo.Database;
+import com.todo.ITodoService;
 import com.todo.models.TodoModel;
 import com.todo.models.TodoSelector;
 import com.todo.models.User;
@@ -10,7 +12,7 @@ public class TodoService implements ITodoService {
 
     private Database database;
 
-    TodoService(Database database) {
+    public TodoService(Database database) {
         this.database = database;
     }
 

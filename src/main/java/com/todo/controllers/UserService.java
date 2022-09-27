@@ -1,12 +1,13 @@
-package com.todo;
+package com.todo.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import com.todo.Database;
 import com.todo.models.User;
 import com.todo.models.UserSelector;
 
 public class UserService {
-    static void addUser(Database database, String username, String password) {
+    static public void addUser(Database database, String username, String password) {
         try {
             Connection conn = database.connect();
             UserSelector userSelector = new UserSelector(conn);
@@ -25,7 +26,7 @@ public class UserService {
         }
     }
 
-    static User getUser(Database database, String username, String password) {
+    static public User getUser(Database database, String username, String password) {
         System.out.println("getUser: " + username + " " + password);
         try {
             Connection conn = database.connect();
