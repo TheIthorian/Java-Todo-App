@@ -6,7 +6,7 @@ import com.todo.models.User;
 // https://www.baeldung.com/mockito-verify
 
 public class AppController {
-    public static IArgumentParser argumentParser = new ArgumentParser();
+    public static ArgumentParser argumentParser = new ArgumentParser();
     public static IInputHandler inputHandler = new InputHandler();
     public static IResourceHandler fileHandler = new FileHandler();
 

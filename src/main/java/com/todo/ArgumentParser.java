@@ -1,6 +1,6 @@
 package com.todo;
 
-public class ArgumentParser implements IArgumentParser {
+public class ArgumentParser {
     public ArgumentParser() {}
 
     public ArgumentCollection readArgs(String[] args) {
