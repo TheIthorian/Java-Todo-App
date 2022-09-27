@@ -30,6 +30,14 @@ public class User extends UserSelector.UserDto {
         return this.isAuthenticated;
     }
 
+    public void insert(UserSelector selector) {
+        selector.insert(this);
+    }
+
+    public void update(UserSelector selector) {
+        throw new UnsupportedOperationException("User.update is not yet implemented");
+    }
+
     public boolean isPasswordCorrect(UserSelector selector) {
         return isPasswordCorrect(selector, this.username, this.password);
     }
@@ -39,12 +47,8 @@ public class User extends UserSelector.UserDto {
         return (selector.selectByUsernamePassword(username, password) == null);
     }
 
-    public void insert(UserSelector selector) {
-        selector.insert(this);
-    }
-
-    public void update(UserSelector selector) {
-        throw new UnsupportedOperationException("User.update is not yet implemented");
+    public static boolean usernameExists(UserSelector selector, String username) {
+        return selector.selectByUsername(username) != null;
     }
 
     public static User getByUsernamePassword(UserSelector selector, String username,
@@ -56,8 +60,14 @@ public class User extends UserSelector.UserDto {
         return null;
     }
 
-    public static boolean usernameExists(UserSelector selector, String username) {
-        return selector.selectByUsername(username) != null;
+    public static User addUser(UserSelector selector, String username, String password) {
+        if (usernameExists(selector, username)) {
+            System.out.println("Username already exists.");
+            return null;
+        }
+
+        User newUser = new User(username, password);
+        return new User(selector.insert(newUser));
     }
 
     public static void createTable(Connection conn) throws SQLException {
@@ -69,13 +79,4 @@ public class User extends UserSelector.UserDto {
         statement.close();
     }
 
-    public static User addUser(UserSelector selector, String username, String password) {
-        if (usernameExists(selector, username)) {
-            System.out.println("Username already exists.");
-            return null;
-        }
-
-        User newUser = new User(username, password);
-        return new User(selector.insert(newUser));
-    }
 }
