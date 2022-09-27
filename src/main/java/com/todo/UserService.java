@@ -10,7 +10,14 @@ public class UserService {
         try {
             Connection conn = database.connect();
             UserSelector userSelector = new UserSelector(conn);
-            User.addUser(userSelector, username, password);
+
+            if (User.usernameExists(userSelector, username)) {
+                System.out.println("Username already exists.");
+                return;
+            }
+
+            User user = new User(username, password);
+            user.insert(userSelector);
             conn.close();
         } catch (SQLException e) {
             System.out.print("Unable to add new user:");

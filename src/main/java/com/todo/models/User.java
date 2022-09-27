@@ -31,44 +31,35 @@ public class User extends UserSelector.UserDto {
         return this.isAuthenticated;
     }
 
-    public void insert(UserSelector selector) {
+    public void insert(UserSelector selector) throws SQLException {
         selector.insert(this);
     }
 
-    public void update(UserSelector selector) {
+    public void update(UserSelector selector) throws SQLException {
         throw new UnsupportedOperationException("User.update is not yet implemented");
     }
 
-    public boolean isPasswordCorrect(UserSelector selector) {
+    public boolean isPasswordCorrect(UserSelector selector) throws SQLException {
         return isPasswordCorrect(selector, this.username, this.password);
     }
 
-    public static boolean isPasswordCorrect(UserSelector selector, String username,
-            String password) {
+    public static boolean isPasswordCorrect(UserSelector selector, String username, String password)
+            throws SQLException {
         return (selector.selectByUsernamePassword(username, password) == null);
     }
 
-    public static boolean usernameExists(UserSelector selector, String username) {
+    public static boolean usernameExists(UserSelector selector, String username)
+            throws SQLException {
         return selector.selectByUsername(username) != null;
     }
 
     public static User getByUsernamePassword(UserSelector selector, String username,
-            String password) {
+            String password) throws SQLException {
         UserSelector.UserDto user = selector.selectByUsernamePassword(username, password);
         if (user != null) {
             return new User(user);
         }
         return null;
-    }
-
-    public static User addUser(UserSelector selector, String username, String password) {
-        if (usernameExists(selector, username)) {
-            System.out.println("Username already exists.");
-            return null;
-        }
-
-        User newUser = new User(username, password);
-        return new User(selector.insert(newUser));
     }
 
     public static void createTable(Connection conn) throws SQLException {

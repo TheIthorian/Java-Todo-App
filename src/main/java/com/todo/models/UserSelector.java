@@ -40,7 +40,7 @@ public class UserSelector {
         this.conn = conn;
     }
 
-    UserDto selectByUsernamePassword(String username, String password) {
+    UserDto selectByUsernamePassword(String username, String password) throws SQLException {
         UserDto user = selectByUsername(username);
         if (user.password.equals(password)) {
             return user;
@@ -48,43 +48,33 @@ public class UserSelector {
         return null;
     }
 
-    UserDto selectByUsername(String username) {
+    UserDto selectByUsername(String username) throws SQLException {
         String query = "SELECT userId, username, password FROM users WHERE username = ?";
 
-        try {
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, username);
-            ResultSet result = statement.executeQuery();
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setString(1, username);
+        ResultSet result = statement.executeQuery();
 
-            if (result.next()) {
-                UserDto user = new UserDto(result);
-                return user;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (result.next()) {
+            UserDto user = new UserDto(result);
+            return user;
         }
 
         return null;
     }
 
-    UserDto insert(UserDto user) {
+    UserDto insert(UserDto user) throws SQLException {
         String query = "INSERT INTO users (username, password) VALUES (?, ?)";
 
-        try {
-            PreparedStatement statement =
-                    conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, user.username);
-            statement.setString(2, user.password);
-            statement.executeUpdate();
-            ResultSet result = statement.getGeneratedKeys();
+        PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, user.username);
+        statement.setString(2, user.password);
+        statement.executeUpdate();
+        ResultSet result = statement.getGeneratedKeys();
 
-            if (result.next()) {
-                int userId = result.getInt(1);
-                return new UserDto(userId, user.username, user.password);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (result.next()) {
+            int userId = result.getInt(1);
+            return new UserDto(userId, user.username, user.password);
         }
 
         return user;
