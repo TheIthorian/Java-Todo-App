@@ -38,6 +38,10 @@ public class User extends UserSelector.UserDto {
         selector.insert(this);
     }
 
+    public void update(UserSelector selector) {
+        throw new UnsupportedOperationException("User.update is not yet implemented");
+    }
+
     public static boolean isPasswordCorrect(UserSelector selector, String username,
             String password) {
         return (selector.selectByUsernamePassword(username, password) == null);
