@@ -1,6 +1,5 @@
 package com.todo;
 
-import java.sql.SQLException;
 import com.todo.models.User;
 
 // https://www.oracle.com/java/technologies/javase/javadoc-tool.html
@@ -9,35 +8,43 @@ import com.todo.models.User;
 public class TodoController {
     public static IArgumentParser argumentParser = new ArgumentParser();
     public static IInputHandler inputHandler = new InputHandler();
-    public static ITodoService todoService = new TodoService();
-    public static IConfigurationController configurationController = new ConfigurationController();
-    public static ConfigurationValidator configurationValidator = new ConfigurationValidator();
-    public static UserAuthenticator userAuthenticator = new UserAuthenticator();
+    public static FileHandler fileHandler = new FileHandler();
+
+    public static ConfigurationController configurationController =
+            new ConfigurationController(fileHandler);
+    public static ConfigurationValidator configurationValidator;
+
+    // public static UserAuthenticator userAuthenticator = new UserAuthenticator();
+
+    public static Database database;
 
     public TodoController() {}
 
     public void run(String[] args) {
         ArgumentCollection arguments = argumentParser.readArgs(args);
-        configurationController.load();
+        configurationValidator = new ConfigurationValidator();
+        configurationController.load(); // configuration is empty until we read load from somewhere
+        database = new Database(configurationController.getDatabaseConfiguration(), fileHandler);
 
-        this.buildDatabase();
-
-        this.handleConfigurationOperation(arguments);
-
-        this.handleTodoOperation(arguments);
-
-        this.handleNoOperation(arguments);
+        buildDatabase();
+        processArguments(arguments);
 
         inputHandler.awaitInput("Prees enter to close...");
     }
 
     private void buildDatabase() {
-        if (!Database.alreadyExists()) {
-            Database.createTables();
+        if (!database.alreadyExists()) {
+            database.createTables();
         }
     }
 
-    private void handleConfigurationOperation(ArgumentCollection arguments) {
+    private void processArguments(ArgumentCollection arguments) {
+        processTodoOperation(arguments);
+        processNoOperation(arguments);
+        processConfigurationOperation(arguments);
+    }
+
+    private void processConfigurationOperation(ArgumentCollection arguments) {
         if (arguments.contains("-cf")) {
             configurationController.setUsername(arguments.get("username"));
             configurationController.setPassword(arguments.get("password"));
@@ -45,13 +52,19 @@ public class TodoController {
             configurationController.saveToFile();
         }
 
-        if (arguments.contains("-ca")) {
-            configurationController.addNewUser(arguments.get("username"),
-                    arguments.get("password"));
+        if (arguments.contains("-addUser")) {
+            // Are we able to add a new user?
+            ConfigurationValidator validator = new ConfigurationValidator();
+            if (!validator.isValid(configurationController)) {
+                return;
+            }
+
+            UserService.addUser(database, configurationController.getUsername(),
+                    configurationController.getPassword());
         }
     }
 
-    private void handleTodoOperation(ArgumentCollection arguments) {
+    private void processTodoOperation(ArgumentCollection arguments) {
         if (!arguments.contains("-a") && !arguments.contains("-u") && !arguments.contains("-d")) {
             return;
         }
@@ -60,19 +73,15 @@ public class TodoController {
             return;
         }
 
-        if (!userAuthenticator.areCredentialsCorrect(configurationController)) {
+        User user = UserService.getUser(database, configurationController.getUsername(),
+                configurationController.getPassword());
+
+        if (user == null || !user.authenticate()) {
             System.out.println("Credentials not recognised.");
             return;
         }
 
-        User user = null;
-        try {
-            user = User.getByUsernamePassword(configurationController.getUsername(),
-                    configurationController.getPassword());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return;
-        }
+        TodoService todoService = new TodoService(database);
 
         if (arguments.contains("-a")) {
             todoService.addTodo(arguments.get("title"), arguments.get("description"), user);
@@ -84,7 +93,7 @@ public class TodoController {
         }
     }
 
-    private void handleNoOperation(ArgumentCollection arguments) {
+    private void processNoOperation(ArgumentCollection arguments) {
         if (!arguments.isEmpty()) {
             return;
         }
