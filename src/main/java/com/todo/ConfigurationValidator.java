@@ -7,12 +7,6 @@ public class ConfigurationValidator {
     private String NOT_DEFINED = "is not specified in config.json.";
     private HashMap<String, String> errors = new HashMap<String, String>();
 
-    private void printErrors() {
-        for (String key : errors.keySet()) {
-            System.out.println("Error: " + key + " " + NOT_DEFINED);
-        }
-    }
-
     public boolean isValid(ConfigurationController configurationController) {
         if (configurationController.getDatabaseLocation() == null) {
             errors.put("databaseLocation", NOT_DEFINED);
@@ -27,5 +21,11 @@ public class ConfigurationValidator {
         printErrors();
 
         return errors.isEmpty();
+    }
+
+    private void printErrors() {
+        for (String key : errors.keySet()) {
+            System.out.println("Error: " + key + " " + NOT_DEFINED);
+        }
     }
 }
