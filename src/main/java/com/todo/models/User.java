@@ -34,17 +34,17 @@ public class User extends UserSelector.UserDto {
         return isPasswordCorrect(selector, this.username, this.password);
     }
 
+    public static boolean isPasswordCorrect(UserSelector selector, String username,
+            String password) {
+        return (selector.selectByUsernamePassword(username, password) == null);
+    }
+
     public void insert(UserSelector selector) {
         selector.insert(this);
     }
 
     public void update(UserSelector selector) {
         throw new UnsupportedOperationException("User.update is not yet implemented");
-    }
-
-    public static boolean isPasswordCorrect(UserSelector selector, String username,
-            String password) {
-        return (selector.selectByUsernamePassword(username, password) == null);
     }
 
     public static User getByUsernamePassword(UserSelector selector, String username,
