@@ -1,5 +1,8 @@
 package com.todo;
 
+import com.todo.controllers.ConfigurationController;
+import com.todo.controllers.TodoService;
+import com.todo.controllers.UserService;
 import com.todo.models.User;
 
 // https://www.oracle.com/java/technologies/javase/javadoc-tool.html
