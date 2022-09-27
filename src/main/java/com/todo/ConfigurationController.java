@@ -45,7 +45,7 @@ public class ConfigurationController {
         return new DatabaseConfiguration(databaseLocation, "todo.db");
     }
 
-    public void saveToFile() {
+    public void save() {
         System.out.println("Saving configuration to file...");
         HashMap<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("username", username);
