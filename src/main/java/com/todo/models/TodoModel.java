@@ -13,7 +13,7 @@ public class TodoModel extends TodoSelector.TodoDto {
         this.userId = user.getId();
     }
 
-    public TodoModel(TodoSelector.TodoDto todo) {
+    private TodoModel(TodoSelector.TodoDto todo) {
         super(todo);
     }
 
