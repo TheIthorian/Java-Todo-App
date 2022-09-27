@@ -3,6 +3,7 @@ package com.todo.models;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import com.todo.IUserAuthenticator;
 
 public class User extends UserSelector.UserDto {
     private boolean isAuthenticated = false;

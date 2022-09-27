@@ -1,4 +1,6 @@
-package com.todo.models;
+package com.todo;
+
+import com.todo.models.User;
 
 public interface IUserAuthenticator {
     /**
