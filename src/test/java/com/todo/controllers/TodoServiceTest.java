@@ -20,6 +20,7 @@ public class TodoServiceTest {
     private void setup() throws Exception {
         mockDatabase = Mockito.mock(Database.class);
         user = Mockito.mock(User.class);
+        Mockito.when(user.getId()).thenReturn(99);
 
         Connection connection = Mockito.mock(Connection.class);
         Mockito.when(mockDatabase.connect()).thenReturn(connection);
@@ -46,6 +47,6 @@ public class TodoServiceTest {
         TodoModel todo = todoCaptor.getValue();
         assertEquals(title, todo.title);
         assertEquals(description, todo.description);
-        assertEquals(0, todo.userId); // Default value
+        assertEquals(99, todo.userId);
     }
 }
