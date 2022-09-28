@@ -21,14 +21,6 @@ public class TodoModel extends TodoSelector.TodoDto {
         return this.todoId;
     }
 
-    public void insert(TodoSelector selector) throws SQLException {
-        selector.insert(this);
-    }
-
-    public void update(TodoSelector selector) throws SQLException {
-        selector.update(this);
-    }
-
     public static List<TodoModel> getByTitle(TodoSelector selector, String title)
             throws SQLException {
         final List<TodoSelector.TodoDto> todoItems = selector.selectByTitle(title);

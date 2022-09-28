@@ -21,7 +21,7 @@ public class TodoService implements ITodoService {
             Connection conn = database.connect();
             TodoSelector todoSelector = new TodoSelector(conn, user);
             TodoModel todo = new TodoModel(title, description, user);
-            todo.insert(todoSelector);
+            todoSelector.insert(todo);
             conn.close();
             System.out.print("Todo successfully added.");
         } catch (SQLException e) {
@@ -40,7 +40,7 @@ public class TodoService implements ITodoService {
             existingTodo.description =
                     newDescription == null ? existingTodo.description : newDescription;
 
-            existingTodo.update(todoSelector);
+            todoSelector.update(existingTodo);
             conn.close();
             System.out.print("Todo successfully updated.");
         } catch (SQLException e) {
