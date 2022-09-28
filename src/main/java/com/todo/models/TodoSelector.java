@@ -17,7 +17,7 @@ public class TodoSelector {
         protected int todoId;
         public String title;
         public String description;
-        protected int userId;
+        public int userId;
 
         TodoDto() {}
 
@@ -46,7 +46,7 @@ public class TodoSelector {
         this.conn = conn;
     }
 
-    List<TodoDto> selectByTitle(String title) throws SQLException {
+    public List<TodoDto> selectByTitle(String title) throws SQLException {
         String query = "SELECT todoId, title, description FROM todo WHERE title = ? AND userId = ?";
         List<TodoDto> output = new ArrayList<TodoDto>();
 
@@ -62,7 +62,7 @@ public class TodoSelector {
         return output;
     }
 
-    TodoDto insert(TodoDto todo) throws SQLException {
+    public TodoDto insert(TodoDto todo) throws SQLException {
         String query = "INSERT INTO todo (title, description, userId) VALUES (?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -80,7 +80,7 @@ public class TodoSelector {
         return todo;
     }
 
-    void update(TodoDto todo) throws SQLException {
+    public void update(TodoDto todo) throws SQLException {
         String query = "UPDATE todo SET title = ?, description = ? WHERE todoId = ? AND userId = ?";
 
         PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
