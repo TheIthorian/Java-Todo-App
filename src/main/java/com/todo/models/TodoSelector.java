@@ -44,8 +44,23 @@ public class TodoSelector extends BaseSelector {
         this.user = user;
     }
 
+    public List<TodoDto> selectAll() throws SQLException {
+        String query = "SELECT id, title, description FROM todo WHERE userId = ?";
+        List<TodoDto> output = new ArrayList<TodoDto>();
+
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setInt(1, user.userId);
+        ResultSet result = statement.executeQuery();
+
+        while (result.next()) {
+            output.add(new TodoDto(result));
+        }
+
+        return output;
+    }
+
     public List<TodoDto> selectByTitle(String title) throws SQLException {
-        String query = "SELECT todoId, title, description FROM todo WHERE title = ? AND userId = ?";
+        String query = "SELECT id, title, description FROM todo WHERE title = ? AND userId = ?";
         List<TodoDto> output = new ArrayList<TodoDto>();
 
         PreparedStatement statement = conn.prepareStatement(query);
