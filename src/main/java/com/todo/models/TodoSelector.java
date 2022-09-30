@@ -20,7 +20,7 @@ public class TodoSelector extends BaseSelector {
         public TodoDto() {}
 
         TodoDto(ResultSet result) throws SQLException {
-            this.todoId = result.getInt("todoId");
+            this.todoId = result.getInt("id");
             this.title = result.getString("title");
             this.description = result.getString("description");
         }
