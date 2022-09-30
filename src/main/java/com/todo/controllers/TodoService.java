@@ -11,9 +11,14 @@ import com.todo.models.User;
 public class TodoService implements ITodoService {
 
     private Database database;
+    private User user;
 
-    public TodoService(Database database) {
+    public TodoSelector selector;
+
+    public TodoService(Database database, User user) {
         this.database = database;
+        this.user = user;
+        selector = new TodoSelector(user);
     }
 
     public void addTodo(String title, String description, User user) {
