@@ -1,6 +1,5 @@
 package com.todo.models;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,9 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TodoSelector {
+public class TodoSelector extends BaseSelector {
 
-    private Connection conn;
     private User user;
 
     public static class TodoDto {
@@ -19,7 +17,7 @@ public class TodoSelector {
         public String description;
         public int userId;
 
-        TodoDto() {}
+        public TodoDto() {}
 
         TodoDto(ResultSet result) throws SQLException {
             this.todoId = result.getInt("todoId");
@@ -38,12 +36,12 @@ public class TodoSelector {
             this.todoId = todo.todoId;
             this.title = todo.title;
             this.description = todo.description;
+            this.userId = todo.userId;
         }
     }
 
-    public TodoSelector(Connection conn, User user) {
+    public TodoSelector(User user) {
         this.user = user;
-        this.conn = conn;
     }
 
     public List<TodoDto> selectByTitle(String title) throws SQLException {
