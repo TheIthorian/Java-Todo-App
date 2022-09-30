@@ -22,7 +22,31 @@ public class TodoService implements ITodoService {
         selector = new TodoSelector(user);
     }
 
-    public List<TodoModel> getByTitle(String title) throws SQLException {
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<TodoModel> getAll() {
+        final List<TodoModel> output = new ArrayList<TodoModel>();
+        try {
+            selector.connect(database);
+            final List<TodoSelector.TodoDto> todoItems = selector.selectAll();
+            for (TodoSelector.TodoDto todoItem : todoItems) {
+                output.add((TodoModel) new TodoModel(todoItem));
+            }
+            selector.disconnect();
+        } catch (SQLException e) {
+            System.out.print("Unable to get new todo items:");
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+    public List<TodoModel> getByTitle(String title) {
         final List<TodoModel> output = new ArrayList<TodoModel>();
         try {
             selector.connect(database);
