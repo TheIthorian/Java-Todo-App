@@ -3,8 +3,6 @@ package com.todo.models;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TodoModel extends TodoSelector.TodoDto {
     public TodoModel(String title, String description, User user) {
@@ -13,24 +11,12 @@ public class TodoModel extends TodoSelector.TodoDto {
         this.userId = user.getId();
     }
 
-    private TodoModel(TodoSelector.TodoDto todo) {
+    public TodoModel(TodoSelector.TodoDto todo) {
         super(todo);
     }
 
     public int getId() {
         return this.todoId;
-    }
-
-    public static List<TodoModel> getByTitle(TodoSelector selector, String title)
-            throws SQLException {
-        final List<TodoSelector.TodoDto> todoItems = selector.selectByTitle(title);
-
-        final List<TodoModel> output = new ArrayList<TodoModel>();
-        for (TodoSelector.TodoDto todoItem : todoItems) {
-            output.add((TodoModel) new TodoModel(todoItem));
-        }
-
-        return output;
     }
 
     public static void createTable(Connection conn) throws SQLException {
