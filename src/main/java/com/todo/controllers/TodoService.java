@@ -1,7 +1,8 @@
 package com.todo.controllers;
 
-import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import com.todo.Database;
 import com.todo.ITodoService;
 import com.todo.models.TodoModel;
@@ -21,13 +22,30 @@ public class TodoService implements ITodoService {
         selector = new TodoSelector(user);
     }
 
-    public void addTodo(String title, String description, User user) {
+    public List<TodoModel> getByTitle(String title) throws SQLException {
+        final List<TodoModel> output = new ArrayList<TodoModel>();
         try {
-            Connection conn = database.connect();
-            TodoSelector todoSelector = new TodoSelector(conn, user);
+
+            selector.connect(database);
+            final List<TodoSelector.TodoDto> todoItems = selector.selectByTitle(title);
+            for (TodoSelector.TodoDto todoItem : todoItems) {
+                output.add((TodoModel) new TodoModel(todoItem));
+            }
+            selector.disconnect();
+        } catch (SQLException e) {
+            System.out.print("Unable to get new todo items:");
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+    public void addTodo(String title, String description) {
+        try {
             TodoModel todo = new TodoModel(title, description, user);
-            todoSelector.insert(todo);
-            conn.close();
+
+            selector.connect(database);
+            selector.insert(todo);
+            selector.disconnect();
             System.out.print("Todo successfully added.");
         } catch (SQLException e) {
             System.out.print("Unable to add new todo:");
@@ -35,18 +53,17 @@ public class TodoService implements ITodoService {
         }
     }
 
-    public void updateTodo(String title, String newTitle, String newDescription, User user) {
+    public void updateTodo(String title, String newTitle, String newDescription) {
         try {
-            Connection conn = database.connect();
-            TodoSelector todoSelector = new TodoSelector(conn, user);
-            TodoModel existingTodo = TodoModel.getByTitle(todoSelector, title).get(0);
+            TodoModel existingTodo = getByTitle(title).get(0);
 
             existingTodo.title = newTitle == null ? existingTodo.title : newTitle;
             existingTodo.description =
                     newDescription == null ? existingTodo.description : newDescription;
 
-            todoSelector.update(existingTodo);
-            conn.close();
+            selector.connect(database);
+            selector.update(existingTodo);
+            selector.disconnect();
             System.out.print("Todo successfully updated.");
         } catch (SQLException e) {
             System.out.print("Unable to update new todo:");
@@ -54,7 +71,7 @@ public class TodoService implements ITodoService {
         }
     }
 
-    public void deleteTodo(String title, User user) {
+    public void deleteTodo(String title) {
         System.out.println("delete: " + title);
     }
 
