@@ -46,6 +46,7 @@ public class TodoService implements ITodoService {
             selector.connect(database);
             selector.insert(todo);
             selector.disconnect();
+
             System.out.print("Todo successfully added.");
         } catch (SQLException e) {
             System.out.print("Unable to add new todo:");
@@ -64,6 +65,7 @@ public class TodoService implements ITodoService {
             selector.connect(database);
             selector.update(existingTodo);
             selector.disconnect();
+
             System.out.print("Todo successfully updated.");
         } catch (SQLException e) {
             System.out.print("Unable to update new todo:");
