@@ -25,7 +25,6 @@ public class TodoService implements ITodoService {
     public List<TodoModel> getByTitle(String title) throws SQLException {
         final List<TodoModel> output = new ArrayList<TodoModel>();
         try {
-
             selector.connect(database);
             final List<TodoSelector.TodoDto> todoItems = selector.selectByTitle(title);
             for (TodoSelector.TodoDto todoItem : todoItems) {
