@@ -19,7 +19,7 @@ public class TodoService implements ITodoService {
     public TodoService(AbstractDatabase database, User user) {
         this.database = database;
         this.user = user;
-        selector = new TodoSelector(user);
+        this.selector = new TodoSelector(user);
     }
 
     public void setDatabase(AbstractDatabase database) {
