@@ -1,17 +1,13 @@
 package com.todo.models;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.mockito.Mockito;
-import com.todo.Database;
-import com.todo.DatabaseConfiguration;
-import com.todo.IResourceHandler;
+import com.todo.TestDatabase;
 import com.todo.models.TodoSelector.TodoDto;
 
 public class TodoSelectorTest {
@@ -19,43 +15,32 @@ public class TodoSelectorTest {
     private User mockUser = Mockito.mock(User.class);
     private int USER_ID = 99;
 
-    private DatabaseConfiguration databaseConfiguration =
-            new DatabaseConfiguration("./assets/", "temp.db");
-    private IResourceHandler mockResourceHandler = Mockito.mock(IResourceHandler.class);
-    private Database database;
+    private TestDatabase database;
 
     private List<TodoModel> existingTodoItems = new ArrayList<TodoModel>();
 
     private void setupDatabase() {
-        mockUser.userId = USER_ID;
-        
-        Mockito.when(mockResourceHandler.exists(anyString())).thenReturn(false);
-        database = new Database(databaseConfiguration, mockResourceHandler);
+        database = new TestDatabase("temp.db");
         database.createTables();
     }
 
     private void insertExistingItems() throws SQLException {
+        mockUser.userId = USER_ID;
         TodoModel todo1 = new TodoModel("todo 1", "desc 1", mockUser);
         TodoModel todo2 = new TodoModel("todo 2", "desc 2", mockUser);
         existingTodoItems.add(todo1);
         existingTodoItems.add(todo2);
 
+        database.refresh();
         Connection conn = database.connect();
-        runDML("DELETE FROM todo", conn);
-        runDML("DELETE FROM users", conn);
-        runDML("INSERT INTO Users (userId, username, password) values (99, 'username', 'password')",
+        database.dml(
+                "INSERT INTO Users (userId, username, password) values (99, 'username', 'password')",
                 conn);
-        runDML("INSERT INTO todo (title, description, userId) VALUES ('todo 1', 'desc 1', 99)",
-                conn);
-        runDML("INSERT INTO todo (title, description, userId) VALUES ('todo 2', 'desc 2', 99)",
-                conn);
+        database.dml("INSERT INTO todo (title, description, userId) VALUES ('" + todo1.title
+                + "', '" + todo1.description + "', " + USER_ID + ")", conn);
+        database.dml("INSERT INTO todo (title, description, userId) VALUES ('" + todo2.title
+                + "', '" + todo2.description + "', " + USER_ID + ")", conn);
         conn.close();
-    }
-
-    private void runDML(String query, Connection conn) throws SQLException {
-        PreparedStatement statement = conn.prepareStatement(query);
-        statement.executeUpdate();
-        statement.close();
     }
 
     @Test
