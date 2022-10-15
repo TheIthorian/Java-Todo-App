@@ -17,7 +17,8 @@ public class TodoSelectorTest {
 
     private TestDatabase database;
 
-    private List<TodoModel> existingTodoItems = new ArrayList<TodoModel>();
+    final TodoModel todo1 = new TodoModel("todo 1", "desc 1", mockUser);
+    final TodoModel todo2 = new TodoModel("todo 2", "desc 2", mockUser);
 
     private void setupDatabase() {
         database = new TestDatabase("temp.db");
@@ -26,10 +27,6 @@ public class TodoSelectorTest {
 
     private void insertExistingItems() throws SQLException {
         mockUser.userId = USER_ID;
-        TodoModel todo1 = new TodoModel("todo 1", "desc 1", mockUser);
-        TodoModel todo2 = new TodoModel("todo 2", "desc 2", mockUser);
-        existingTodoItems.add(todo1);
-        existingTodoItems.add(todo2);
 
         database.refresh();
         Connection conn = database.connect();
@@ -57,10 +54,10 @@ public class TodoSelectorTest {
 
         // Then
         assertEquals(2, todoItems.size());
-        assertEquals(existingTodoItems.get(0).title, todoItems.get(0).title);
-        assertEquals(existingTodoItems.get(0).description, todoItems.get(0).description);
-        assertEquals(existingTodoItems.get(0).userId, todoItems.get(0).userId);
-        assertEquals(existingTodoItems.get(1).title, todoItems.get(1).title);
+        assertEquals(todo1.title, todoItems.get(0).title);
+        assertEquals(todo1.description, todoItems.get(0).description);
+        assertEquals(todo1.userId, todoItems.get(0).userId);
+        assertEquals(todo2.title, todoItems.get(1).title);
     }
 
     @Test
