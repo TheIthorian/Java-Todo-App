@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 import com.todo.TestDatabase;
@@ -12,20 +14,15 @@ import com.todo.models.TodoSelector.TodoDto;
 
 public class TodoSelectorTest {
 
-    private User mockUser = Mockito.mock(User.class);
-    private int USER_ID = 99;
+    private static final User mockUser = Mockito.mock(User.class);
+    private static int USER_ID = 99;
 
-    private TestDatabase database;
+    private static TestDatabase database = new TestDatabase("temp.db");
 
-    final TodoModel todo1 = new TodoModel("todo 1", "desc 1", mockUser);
-    final TodoModel todo2 = new TodoModel("todo 2", "desc 2", mockUser);
+    static final TodoModel todo1 = new TodoModel("todo 1", "desc 1", mockUser);
+    static final TodoModel todo2 = new TodoModel("todo 2", "desc 2", mockUser);
 
-    private void setupDatabase() {
-        database = new TestDatabase("temp.db");
-        database.createTables();
-    }
-
-    private void insertExistingItems() throws SQLException {
+    private static void insertExistingItems() throws SQLException {
         mockUser.userId = USER_ID;
 
         database.refresh();
@@ -40,22 +37,31 @@ public class TodoSelectorTest {
         conn.close();
     }
 
-    private ResultSet selectById(int id, Connection conn) throws SQLException {
+    private static ResultSet selectById(int id, Connection conn) throws SQLException {
         return database.select(
                 "SELECT id, title, description, userId from Todo WHERE id = " + id + "", conn);
+    }
+
+    @BeforeClass
+    public static void setupDatabase() throws SQLException {
+        database.createTables();
+        insertExistingItems();
+    }
+
+    @AfterClass
+    public static void cleanUp() {
+        database.destroy();
     }
 
     @Test
     public void selectAll_returnsAllTodoItems() throws SQLException {
         // Given
-        setupDatabase();
-        insertExistingItems();
-
         TodoSelector selector = new TodoSelector(mockUser);
         selector.connect(database);
 
         // When
         List<TodoDto> todoItems = selector.selectAll();
+        selector.disconnect();
 
         // Then
         assertEquals(2, todoItems.size());
@@ -68,13 +74,17 @@ public class TodoSelectorTest {
     @Test
     public void selectAll_returnsEmptyTodoItems_whenNoneExist() throws SQLException {
         // Given
+        cleanUp();
         setupDatabase();
 
+        User mockUser = Mockito.mock(User.class);
+        mockUser.userId = 1; // Make sure no items exist for the user
         TodoSelector selector = new TodoSelector(mockUser);
         selector.connect(database);
 
         // When
         List<TodoDto> todoItems = selector.selectAll();
+        selector.disconnect();
 
         // Then
         assertEquals(0, todoItems.size());
@@ -83,14 +93,12 @@ public class TodoSelectorTest {
     @Test
     public void selectByTitle_returnsCorrectItems() throws SQLException {
         // Given
-        setupDatabase();
-        insertExistingItems();
-
         TodoSelector selector = new TodoSelector(mockUser);
         selector.connect(database);
 
         // When
         List<TodoDto> todoItems = selector.selectByTitle(todo1.title);
+        selector.disconnect();
 
         // Then
         assertEquals(1, todoItems.size());
@@ -102,15 +110,13 @@ public class TodoSelectorTest {
     @Test
     public void insert_correctlyInsertsTodoItem() throws SQLException {
         // Given
-        setupDatabase();
-        insertExistingItems();
-
         TodoSelector selector = new TodoSelector(mockUser);
         selector.connect(database);
 
         // When
         TodoDto input = new TodoModel("todo 3", "desc 3", mockUser);
         selector.insert(input);
+        selector.disconnect();
 
         Connection conn = database.connect();
         ResultSet newTodo = selectById(3, conn);
@@ -126,15 +132,13 @@ public class TodoSelectorTest {
     @Test
     public void update_correctlyUpdatesTodoItem() throws SQLException {
         // Given
-        setupDatabase();
-        insertExistingItems();
-
         TodoSelector selector = new TodoSelector(mockUser);
         selector.connect(database);
 
         // When
         TodoDto input = new TodoDto(2, "todo 2 - updated", "desc 2 - updated", USER_ID);
         selector.update(input);
+        selector.disconnect();
 
         Connection conn = database.connect();
         ResultSet newTodo = selectById(2, conn);
