@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Class to interface with the SQLite database used for automated tests.
+ */
 public class TestDatabase extends AbstractDatabase {
 
     private String dbName;
