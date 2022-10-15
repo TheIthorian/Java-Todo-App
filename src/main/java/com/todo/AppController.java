@@ -17,30 +17,36 @@ public class AppController {
 
     public static IResourceHandler fileHandler = new FileHandler();
 
-    public static IUserAuthenticator userAuthenticator = new UserAuthenticator();
-
     public static ConfigurationController configurationController =
             new ConfigurationController(fileHandler);
-    public static ConfigurationValidator configurationValidator;
+    public static ConfigurationValidator configurationValidator = new ConfigurationValidator();
 
-    // public static UserAuthenticator userAuthenticator = new UserAuthenticator();
+    public static Database database =
+            new Database(configurationController.getDatabaseConfiguration(), fileHandler);
 
-    public static Database database;
-
-    public TodoService todoService = new TodoService(null, null);
+    public static IUserAuthenticator userAuthenticator = new UserAuthenticator(database);
 
     public AppController() {}
 
     public void run(String[] args) {
-        ArgumentCollection arguments = argumentParser.readArgs(args);
-        configurationValidator = new ConfigurationValidator();
-        configurationController.load(); // configuration is empty until we read load from somewhere
-        database = new Database(configurationController.getDatabaseConfiguration(), fileHandler);
+        loadConfiguration();
+        if (!isConfigurationValid())
+            return;
 
         buildDatabase();
+
+        ArgumentCollection arguments = readArguments(args);
         processArguments(arguments);
 
-        inputHandler.awaitInput("Prees enter to close...");
+        terminate();
+    }
+
+    private void loadConfiguration() {
+        configurationController.load(); // configuration is empty until we read load from somewhere
+    }
+
+    private boolean isConfigurationValid() {
+        return !configurationValidator.isValid(configurationController);
     }
 
     public void buildDatabase() {
@@ -49,31 +55,22 @@ public class AppController {
         }
     }
 
+    private ArgumentCollection readArguments(String[] args) {
+        return argumentParser.readArgs(args);
+    }
+
     public void processArguments(ArgumentCollection arguments) {
-        User user = getUser(database, configurationController);
-        if (user == null) {
+        User user = userAuthenticator.getUser(configurationController.getUsername(),
+                configurationController.getPassword());
+
+        if (user == null)
             return;
-        }
+
         System.out.println(user.getId() + " : " + user.username);
 
         processTodoOperation(arguments, new TodoService(database, user));
         processNoOperation(arguments, user);
         processConfigurationOperation(arguments);
-    }
-
-    public User getUser(Database database, ConfigurationController configurationController) {
-        if (!configurationValidator.isValid(configurationController)) {
-            return null;
-        }
-        User user = UserService.getUser(database, configurationController.getUsername(),
-                configurationController.getPassword());
-
-        if (user == null || !user.authenticate(userAuthenticator)) {
-            System.out.println("Credentials not recognised.");
-            return null;
-        }
-
-        return user;
     }
 
     public void processConfigurationOperation(ArgumentCollection arguments) {
@@ -91,8 +88,15 @@ public class AppController {
                 return;
             }
 
-            UserService.addUser(database, configurationController.getUsername(),
-                    configurationController.getPassword());
+            UserService userService = new UserService(database);
+            try {
+                userService.addUser(configurationController.getUsername(),
+                        configurationController.getPassword());
+            } catch (UserService.UserValidationErrors.UsernameAlreadyExists e) {
+                System.out.println("Username already exists.");
+            } catch (UserService.UserValidationError e) {
+                System.out.println("Unhandled validation error: " + e.getMessage());
+            }
         }
     }
 
@@ -111,6 +115,7 @@ public class AppController {
         } else if (arguments.contains("-d")) {
             todoService.deleteTodo(arguments.get("title"));
         } else if (arguments.contains("-g")) {
+
             List<TodoModel> todos;
 
             if (arguments.contains("title")) {
@@ -136,5 +141,9 @@ public class AppController {
         /*
          * Select option: Find / All / Add / Update / Remove
          */
+    }
+
+    public void terminate() {
+        inputHandler.awaitInput("Prees enter to close...");
     }
 }
