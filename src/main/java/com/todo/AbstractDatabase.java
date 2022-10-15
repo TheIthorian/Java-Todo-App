@@ -2,6 +2,7 @@ package com.todo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.todo.models.TodoModel;
 import com.todo.models.User;
@@ -24,6 +25,11 @@ public abstract class AbstractDatabase {
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.executeUpdate();
         statement.close();
+    }
+
+    public ResultSet select(String sql, Connection conn) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement(sql);
+        return statement.executeQuery();
     }
 
     public abstract Connection connect() throws SQLException;
