@@ -31,6 +31,10 @@ public class ConfigurationValidator {
         return errors.isEmpty();
     }
 
+    public Map<String, String> getErrors() {
+        return this.errors;
+    }
+
     private void printErrors() {
         for (String key : errors.keySet()) {
             System.out.println("Error: " + String.format(errors.get(key), key));
