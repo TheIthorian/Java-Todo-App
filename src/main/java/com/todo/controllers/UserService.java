@@ -26,29 +26,6 @@ public class UserService {
     }
 
     /**
-     * Adds a user with the given `username` and `password`.
-     */
-    public void addUser(String username, String password) {
-        try {
-            selector.connect(database);
-
-            if (selector.selectByUsername(username) != null) {
-                System.out.println("Username already exists.");
-                return;
-            }
-
-            User user = new User(username, password);
-            selector.insert(user);
-
-            selector.disconnect();
-
-        } catch (SQLException e) {
-            System.out.print("Unable to add new user:");
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Returns a user with the matching `username` and `password`.
      */
     public User getUser(String username, String password) {
@@ -71,4 +48,28 @@ public class UserService {
 
         return null;
     }
+
+    /**
+     * Adds a user with the given `username` and `password`.
+     */
+    public void addUser(String username, String password) {
+        try {
+            selector.connect(database);
+
+            if (selector.selectByUsername(username) != null) {
+                System.out.println("Username already exists.");
+                return;
+            }
+
+            User user = new User(username, password);
+            selector.insert(user);
+
+            selector.disconnect();
+
+        } catch (SQLException e) {
+            System.out.print("Unable to add new user:");
+            e.printStackTrace();
+        }
+    }
+
 }
