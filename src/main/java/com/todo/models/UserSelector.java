@@ -5,8 +5,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Class to interact with the user database records.
+ */
 public class UserSelector extends BaseSelector {
 
+    /**
+     * A todo dto object to mirror the database structure.
+     */
     public static class UserDto {
         protected int userId;
         public String username;
@@ -39,6 +45,10 @@ public class UserSelector extends BaseSelector {
 
     public UserSelector() {}
 
+    /**
+     * Returns a user which matches the input `username` and `password`. Returns `null` if no user
+     * is found.
+     */
     public UserDto selectByUsernamePassword(String username, String password) throws SQLException {
         UserDto user = selectByUsername(username);
         if (user != null && user.password.equals(password)) {
@@ -47,6 +57,9 @@ public class UserSelector extends BaseSelector {
         return null;
     }
 
+    /**
+     * Returns a user which matches the input `username`. Returns `null` if no user is found.
+     */
     public UserDto selectByUsername(String username) throws SQLException {
         String query = "SELECT userId, username, password FROM users WHERE username = ?";
 
@@ -62,6 +75,9 @@ public class UserSelector extends BaseSelector {
         return null;
     }
 
+    /**
+     * Inserts a user record.
+     */
     public UserDto insert(UserDto user) throws SQLException {
         String query = "INSERT INTO users (username, password) VALUES (?, ?)";
 
