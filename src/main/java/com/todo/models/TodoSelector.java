@@ -98,7 +98,7 @@ public class TodoSelector extends BaseSelector {
     }
 
     public void update(TodoDto todo) throws SQLException {
-        String query = "UPDATE todo SET title = ?, description = ? WHERE todoId = ? AND userId = ?";
+        String query = "UPDATE todo SET title = ?, description = ? WHERE id = ? AND userId = ?";
 
         PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, todo.title);
