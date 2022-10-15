@@ -3,7 +3,6 @@ package com.todo.models;
 import static org.junit.Assert.assertEquals;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.mockito.Mockito;
