@@ -34,13 +34,17 @@ public class UserSelector {
             this.username = user.username;
             this.password = user.password;
         }
+
+        public int getId() {
+            return this.userId;
+        }
     }
 
     public UserSelector(Connection conn) {
         this.conn = conn;
     }
 
-    UserDto selectByUsernamePassword(String username, String password) throws SQLException {
+    public UserDto selectByUsernamePassword(String username, String password) throws SQLException {
         UserDto user = selectByUsername(username);
         if (user.password.equals(password)) {
             return user;
@@ -48,7 +52,7 @@ public class UserSelector {
         return null;
     }
 
-    UserDto selectByUsername(String username) throws SQLException {
+    public UserDto selectByUsername(String username) throws SQLException {
         String query = "SELECT userId, username, password FROM users WHERE username = ?";
 
         PreparedStatement statement = conn.prepareStatement(query);
@@ -63,7 +67,7 @@ public class UserSelector {
         return null;
     }
 
-    UserDto insert(UserDto user) throws SQLException {
+    public UserDto insert(UserDto user) throws SQLException {
         String query = "INSERT INTO users (username, password) VALUES (?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
