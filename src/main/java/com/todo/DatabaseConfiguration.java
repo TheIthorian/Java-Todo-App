@@ -4,8 +4,8 @@ package com.todo;
  * DTO class to hold database configuration.
  */
 public class DatabaseConfiguration {
-    String databaseLocation;
-    String databaseFileName;
+    public String databaseLocation;
+    public String databaseFileName;
 
     public DatabaseConfiguration(String databaseLocation, String databaseFileName) {
         this.databaseLocation = databaseLocation;
