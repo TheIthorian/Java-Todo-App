@@ -35,6 +35,10 @@ public class ConfigurationValidator {
         return errors.isEmpty();
     }
 
+    /**
+     * Returns all errors found after validating the configurationController. Must be ran after
+     * `isValid`.
+     */
     public Map<String, String> getErrors() {
         return this.errors;
     }
