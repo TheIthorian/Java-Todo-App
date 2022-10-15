@@ -74,4 +74,23 @@ public class TodoSelectorTest {
         // Then
         assertEquals(0, todoItems.size());
     }
+
+    @Test
+    public void selectByTitle_returnsCorrectItems() throws SQLException {
+        // Given
+        setupDatabase();
+        insertExistingItems();
+
+        TodoSelector selector = new TodoSelector(mockUser);
+        selector.connect(database);
+
+        // When
+        List<TodoDto> todoItems = selector.selectByTitle(todo1.title);
+
+        // Then
+        assertEquals(1, todoItems.size());
+        assertEquals(todo1.title, todoItems.get(0).title);
+        assertEquals(todo1.description, todoItems.get(0).description);
+        assertEquals(todo1.userId, todoItems.get(0).userId);
+    }
 }
