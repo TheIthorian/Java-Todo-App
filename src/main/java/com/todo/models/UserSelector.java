@@ -1,14 +1,11 @@
 package com.todo.models;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class UserSelector {
-
-    private Connection conn;
+public class UserSelector extends BaseSelector {
 
     public static class UserDto {
         protected int userId;
@@ -40,13 +37,11 @@ public class UserSelector {
         }
     }
 
-    public UserSelector(Connection conn) {
-        this.conn = conn;
-    }
+    public UserSelector() {}
 
     public UserDto selectByUsernamePassword(String username, String password) throws SQLException {
         UserDto user = selectByUsername(username);
-        if (user.password.equals(password)) {
+        if (user != null && user.password.equals(password)) {
             return user;
         }
         return null;
