@@ -1,6 +1,7 @@
 package com.todo;
 
 import java.util.HashMap;
+import java.util.Map;
 import com.todo.controllers.ConfigurationController;
 
 /**
@@ -17,13 +18,16 @@ public class ConfigurationValidator {
     public boolean isValid(ConfigurationController configurationController) {
         if (configurationController.getDatabaseLocation() == null) {
             errors.put("databaseLocation",
-                    NOT_DEFINED + configurationController.configurationFilePath);
+                    formatError(NOT_DEFINED + configurationController.configurationFilePath,
+                            "databaseLocation"));
         }
         if (configurationController.getUsername() == null) {
-            errors.put("username", NOT_DEFINED + configurationController.configurationFilePath);
+            errors.put("username", formatError(
+                    NOT_DEFINED + configurationController.configurationFilePath, "username"));
         }
         if (configurationController.getPassword() == null) {
-            errors.put("password", NOT_DEFINED + configurationController.configurationFilePath);
+            errors.put("password", formatError(
+                    NOT_DEFINED + configurationController.configurationFilePath, "password"));
         }
 
         printErrors();
@@ -39,5 +43,9 @@ public class ConfigurationValidator {
         for (String key : errors.keySet()) {
             System.out.println("Error: " + String.format(errors.get(key), key));
         }
+    }
+
+    private String formatError(String format, String value) {
+        return String.format(format, value);
     }
 }
