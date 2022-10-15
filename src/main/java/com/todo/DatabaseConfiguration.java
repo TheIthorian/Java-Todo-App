@@ -1,5 +1,8 @@
 package com.todo;
 
+/**
+ * DTO class to hold database configuration.
+ */
 public class DatabaseConfiguration {
     String databaseLocation;
     String databaseFileName;
