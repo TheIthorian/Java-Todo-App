@@ -6,6 +6,9 @@ import org.json.JSONObject;
 import com.todo.DatabaseConfiguration;
 import com.todo.IResourceHandler;
 
+/**
+ * The Configuration controller handles all accessing and setting local configuration.
+ */
 public class ConfigurationController {
 
     private String username = null;
@@ -13,6 +16,9 @@ public class ConfigurationController {
     private String databaseLocation = null;
     private IResourceHandler resourceHandler;
 
+    /**
+     * Name of the json configuration file.
+     */
     public final String configurationFilePath = "config.json";
 
     public ConfigurationController(IResourceHandler resourceHandler) {
@@ -47,6 +53,9 @@ public class ConfigurationController {
         return new DatabaseConfiguration(databaseLocation, "todo.db");
     }
 
+    /**
+     * Saves the current state of the configuration to file.
+     */
     public void save() {
         System.out.println("Saving configuration to file...");
         HashMap<String, String> dataMap = new HashMap<String, String>();
@@ -59,7 +68,7 @@ public class ConfigurationController {
     }
 
     /**
-     * Load configuration from the default location - config.json
+     * Load configuration into memory using the set `configurationFilePath`.
      */
     public void load() {
         System.out.println("Loading configuration from file...");
