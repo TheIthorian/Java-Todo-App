@@ -8,6 +8,9 @@ import java.util.Scanner;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Class used to interact with files on the local OS.
+ */
 public class FileHandler implements IResourceHandler {
 
     public FileHandler() {}
