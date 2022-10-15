@@ -7,10 +7,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to interact with the todo database records.
+ */
 public class TodoSelector extends BaseSelector {
 
     private User user;
 
+    /**
+     * A todo dto object to mirror the database structure.
+     */
     public static class TodoDto {
         protected int todoId;
         public String title;
@@ -48,6 +54,9 @@ public class TodoSelector extends BaseSelector {
         this.user = user;
     }
 
+    /**
+     * Returns a list of all the todo items for the user.
+     */
     public List<TodoDto> selectAll() throws SQLException {
         String query = "SELECT id, title, description FROM todo WHERE userId = ?";
         List<TodoDto> output = new ArrayList<TodoDto>();
@@ -63,6 +72,9 @@ public class TodoSelector extends BaseSelector {
         return output;
     }
 
+    /**
+     * Returns a list of todo items which match the input title.
+     */
     public List<TodoDto> selectByTitle(String title) throws SQLException {
         String query = "SELECT id, title, description FROM todo WHERE title = ? AND userId = ?";
         List<TodoDto> output = new ArrayList<TodoDto>();
@@ -79,6 +91,9 @@ public class TodoSelector extends BaseSelector {
         return output;
     }
 
+    /**
+     * Inserts a todo item.
+     */
     public TodoDto insert(TodoDto todo) throws SQLException {
         String query = "INSERT INTO todo (title, description, userId) VALUES (?, ?, ?)";
 
@@ -97,6 +112,9 @@ public class TodoSelector extends BaseSelector {
         return todo;
     }
 
+    /**
+     * Replaces the data of the input todo item.
+     */
     public void update(TodoDto todo) throws SQLException {
         String query = "UPDATE todo SET title = ?, description = ? WHERE id = ? AND userId = ?";
 
