@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Class to interface with the SQLite database.
+ */
 public class Database extends AbstractDatabase {
     private String cachedDatabaseUrl = null;
     private DatabaseConfiguration configuration;
@@ -14,6 +17,9 @@ public class Database extends AbstractDatabase {
         this.resourceHandler = resourceHandler;
     }
 
+    /**
+     * Returns true if the database has already been created.
+     */
     public boolean alreadyExists() {
         return resourceHandler.exists(this.getDatabaseUrl());
     }
