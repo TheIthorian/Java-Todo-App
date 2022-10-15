@@ -17,11 +17,11 @@ public class TestDatabase extends AbstractDatabase {
     }
 
     public Connection connect() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:./assets/" + dbName);
+        return DriverManager.getConnection("jdbc:sqlite:./" + dbName);
     }
 
     public void destroy() {
-        File database = new File("./assets/" + dbName);
+        File database = new File("./" + dbName);
         database.delete();
     }
 
