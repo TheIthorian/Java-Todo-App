@@ -2,6 +2,7 @@ package com.todo;
 
 import java.util.Arrays;
 import java.util.List;
+import com.todo.controllers.ArgumentController;
 import com.todo.controllers.ConfigurationController;
 import com.todo.controllers.TodoService;
 import com.todo.controllers.UserService;
@@ -13,6 +14,8 @@ import com.todo.models.User;
 
 public class AppController {
     public static ArgumentParser argumentParser = new ArgumentParser();
+    public static ArgumentController argumentController = new ArgumentController(argumentParser);
+
     public static IInputHandler inputHandler = new InputHandler();
 
     public static IResourceHandler fileHandler = new FileHandler();
@@ -21,56 +24,49 @@ public class AppController {
             new ConfigurationController(fileHandler);
     public static ConfigurationValidator configurationValidator = new ConfigurationValidator();
 
-    public static Database database =
-            new Database(configurationController.getDatabaseConfiguration(), fileHandler);
+    public static DatabaseManager databaseManager =
+            new DatabaseManager(configurationController, fileHandler);
 
-    public static IUserAuthenticator userAuthenticator = new UserAuthenticator(database);
+    public static IUserAuthenticator userAuthenticator =
+            new UserAuthenticator(databaseManager.getDatabase());
 
     public AppController() {}
 
     public void run(String[] args) {
-        loadConfiguration();
-        if (!isConfigurationValid())
+        configurationController.load(); // configuration is empty until we read load from somewhere.
+        if (!configurationValidator.isValid(configurationController))
             return;
 
-        buildDatabase();
-
-        ArgumentCollection arguments = readArguments(args);
-        processArguments(arguments);
+        processArguments(args);
 
         terminate();
     }
 
-    private void loadConfiguration() {
-        configurationController.load(); // configuration is empty until we read load from somewhere
-    }
+    public void processArguments(String[] args) {
 
-    private boolean isConfigurationValid() {
-        return !configurationValidator.isValid(configurationController);
-    }
+        ArgumentCollection arguments = argumentParser.readArgs(args);
 
-    public void buildDatabase() {
-        if (!database.alreadyExists()) {
-            database.createTables();
-        }
-    }
+        if (processHelpOperation(arguments, argumentParser))
+            return;
 
-    private ArgumentCollection readArguments(String[] args) {
-        return argumentParser.readArgs(args);
-    }
+        processConfigurationOperation(arguments);
 
-    public void processArguments(ArgumentCollection arguments) {
         User user = userAuthenticator.getUser(configurationController.getUsername(),
                 configurationController.getPassword());
 
         if (user == null)
             return;
 
-        System.out.println(user.getId() + " : " + user.username);
-
-        processTodoOperation(arguments, new TodoService(database, user));
+        processTodoOperation(arguments, new TodoService(databaseManager.getDatabase(), user));
         processNoOperation(arguments, user);
-        processConfigurationOperation(arguments);
+    }
+
+    public boolean processHelpOperation(ArgumentCollection arguments, ArgumentParser parser) {
+        if (arguments.contains("-h")) {
+            parser.printOptions();
+            return true;
+        }
+        return false;
     }
 
     public void processConfigurationOperation(ArgumentCollection arguments) {
@@ -88,7 +84,7 @@ public class AppController {
                 return;
             }
 
-            UserService userService = new UserService(database);
+            UserService userService = new UserService(databaseManager.getDatabase());
             try {
                 userService.addUser(configurationController.getUsername(),
                         configurationController.getPassword());
