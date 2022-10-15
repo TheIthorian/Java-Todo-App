@@ -144,5 +144,6 @@ public class TodoSelectorTest {
         assertEquals("todo 2 - updated", newTodo.getString("title"));
         assertEquals("desc 2 - updated", newTodo.getString("description"));
         assertEquals(USER_ID, newTodo.getInt("userId"));
+        conn.close();
     }
 }
