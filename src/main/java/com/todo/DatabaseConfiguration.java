@@ -11,4 +11,11 @@ public class DatabaseConfiguration {
         this.databaseLocation = databaseLocation;
         this.databaseFileName = databaseFileName;
     }
+
+    /**
+     * Returns a DatabaseConfiguration object which is used to create an in-memory sqlite database.
+     */
+    public static DatabaseConfiguration InMemory() {
+        return new DatabaseConfiguration("", ":memory:");
+    }
 }
