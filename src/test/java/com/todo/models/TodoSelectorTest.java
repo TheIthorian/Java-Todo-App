@@ -2,6 +2,7 @@ package com.todo.models;
 
 import static org.junit.Assert.assertEquals;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import org.junit.Test;
@@ -37,6 +38,11 @@ public class TodoSelectorTest {
         database.dml("INSERT INTO todo (title, description, userId) VALUES ('" + todo2.title
                 + "', '" + todo2.description + "', " + USER_ID + ")", conn);
         conn.close();
+    }
+
+    private ResultSet selectById(int id, Connection conn) throws SQLException {
+        return database.select(
+                "SELECT id, title, description, userId from Todo WHERE id = " + id + "", conn);
     }
 
     @Test
@@ -104,12 +110,39 @@ public class TodoSelectorTest {
 
         // When
         TodoDto input = new TodoModel("todo 3", "desc 3", mockUser);
-        TodoDto newTodo = selector.insert(input);
+        selector.insert(input);
+
+        Connection conn = database.connect();
+        ResultSet newTodo = selectById(3, conn);
 
         // Then
-        assertEquals(3, newTodo.getId());
-        assertEquals("todo 3", input.title);
-        assertEquals("desc 3", input.description);
-        assertEquals(mockUser.getId(), input.userId);
+        assertEquals(3, newTodo.getInt("id"));
+        assertEquals("todo 3", newTodo.getString("title"));
+        assertEquals("desc 3", newTodo.getString("description"));
+        assertEquals(USER_ID, newTodo.getInt("userId"));
+        conn.close();
+    }
+
+    @Test
+    public void update_correctlyUpdatesTodoItem() throws SQLException {
+        // Given
+        setupDatabase();
+        insertExistingItems();
+
+        TodoSelector selector = new TodoSelector(mockUser);
+        selector.connect(database);
+
+        // When
+        TodoDto input = new TodoDto(2, "todo 2 - updated", "desc 2 - updated", USER_ID);
+        selector.update(input);
+
+        Connection conn = database.connect();
+        ResultSet newTodo = selectById(2, conn);
+
+        // Then
+        assertEquals(2, newTodo.getInt("id"));
+        assertEquals("todo 2 - updated", newTodo.getString("title"));
+        assertEquals("desc 2 - updated", newTodo.getString("description"));
+        assertEquals(USER_ID, newTodo.getInt("userId"));
     }
 }
