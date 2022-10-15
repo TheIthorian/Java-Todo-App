@@ -93,4 +93,24 @@ public class TodoSelectorTest {
         assertEquals(todo1.description, todoItems.get(0).description);
         assertEquals(todo1.userId, todoItems.get(0).userId);
     }
+
+    @Test
+    public void insert_correctlyInsertsTodoItem() throws SQLException {
+        // Given
+        setupDatabase();
+        insertExistingItems();
+
+        TodoSelector selector = new TodoSelector(mockUser);
+        selector.connect(database);
+
+        // When
+        TodoDto input = new TodoModel("todo 3", "desc 3", mockUser);
+        TodoDto newTodo = selector.insert(input);
+
+        // Then
+        assertEquals(3, newTodo.getId());
+        assertEquals("todo 3", input.title);
+        assertEquals("desc 3", input.description);
+        assertEquals(mockUser.getId(), input.userId);
+    }
 }
