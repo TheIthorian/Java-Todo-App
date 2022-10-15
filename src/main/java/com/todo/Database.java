@@ -11,9 +11,7 @@ public class Database {
     private DatabaseConfiguration configuration;
     private IResourceHandler resourceHandler;
 
-    static class RecordNotFoundException extends Exception {};
-
-    Database(DatabaseConfiguration configuration, IResourceHandler resourceHandler) {
+    public Database(DatabaseConfiguration configuration, IResourceHandler resourceHandler) {
         this.configuration = configuration;
         this.resourceHandler = resourceHandler;
     }
