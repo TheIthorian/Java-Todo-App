@@ -17,7 +17,7 @@ public class TodoModel extends TodoSelector.TodoDto {
 
     public static void createTable(Connection conn) throws SQLException {
         final String createTodo = "CREATE TABLE IF NOT EXISTS todo ("
-                + "id integer PRIMARY KEY, title text NTO NULL, description text, userId integer REFERENCES users (userId))";
+                + "id integer PRIMARY KEY, title text NOT NULL, description text, userId integer REFERENCES users (userId))";
 
         final Statement statement = conn.createStatement();
         statement.execute(createTodo);
