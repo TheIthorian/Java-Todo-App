@@ -19,7 +19,7 @@ public class ConfigurationController {
     /**
      * Name of the json configuration file.
      */
-    public final String configurationFilePath = "config.json";
+    public String configurationFilePath = "config.json";
 
     public ConfigurationController(IResourceHandler resourceHandler) {
         this.resourceHandler = resourceHandler;
