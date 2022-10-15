@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import com.todo.Database;
 
-public class BaseSelector {
+public abstract class BaseSelector {
     public Connection conn;
 
     public void connect(Database database) throws SQLException {
