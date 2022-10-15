@@ -11,6 +11,11 @@ import com.todo.models.UserSelector;
 public class UserService {
     private AbstractDatabase database;
 
+    public static abstract class UserValidationError extends Exception {}
+    public static class UserValidationErrors {
+        public static class UsernameAlreadyExists extends UserValidationError {}
+    }
+
     public UserSelector selector;
 
     public UserService(AbstractDatabase database) {
@@ -52,13 +57,13 @@ public class UserService {
     /**
      * Adds a user with the given `username` and `password`.
      */
-    public void addUser(String username, String password) {
+    public void addUser(String username, String password) throws UserValidationError {
         try {
             selector.connect(database);
 
             if (selector.selectByUsername(username) != null) {
-                System.out.println("Username already exists.");
-                return;
+                selector.disconnect();
+                throw new UserValidationErrors.UsernameAlreadyExists();
             }
 
             User user = new User(username, password);
