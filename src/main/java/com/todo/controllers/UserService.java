@@ -5,6 +5,9 @@ import com.todo.AbstractDatabase;
 import com.todo.models.User;
 import com.todo.models.UserSelector;
 
+/**
+ * Methods used to perform CRUD operations on the stored users.
+ */
 public class UserService {
     private AbstractDatabase database;
 
@@ -15,10 +18,16 @@ public class UserService {
         this.selector = new UserSelector();
     }
 
+    /**
+     * Returns `true` if the username and password combination matches with an existing user.
+     */
     public boolean isPasswordCorrect(String username, String password) throws SQLException {
         return (selector.selectByUsernamePassword(username, password) != null);
     }
 
+    /**
+     * Adds a user with the given `username` and `password`.
+     */
     public void addUser(String username, String password) {
         try {
             selector.connect(database);
@@ -39,6 +48,9 @@ public class UserService {
         }
     }
 
+    /**
+     * Returns a user with the matching `username` and `password`.
+     */
     public User getUser(String username, String password) {
         System.out.println("getUser: " + username + " " + password);
         try {
