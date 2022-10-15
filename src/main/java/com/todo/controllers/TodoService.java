@@ -36,9 +36,6 @@ public class TodoService implements ITodoService {
         this.user = user;
     }
 
-    /**
-     * Returns a list of all todo items for the user.
-     */
     public List<TodoModel> getAll() {
         final List<TodoModel> output = new ArrayList<TodoModel>();
         try {
@@ -55,9 +52,6 @@ public class TodoService implements ITodoService {
         return output;
     }
 
-    /*
-     * Returns a list of existing todo items which match the input title.
-     */
     public List<TodoModel> getByTitle(String title) {
         final List<TodoModel> output = new ArrayList<TodoModel>();
         try {
@@ -74,9 +68,6 @@ public class TodoService implements ITodoService {
         return output;
     }
 
-    /**
-     * Adds a todo item with the given `title` and `description`.
-     */
     public void addTodo(String title, String description) {
         try {
             TodoModel todo = new TodoModel(title, description, user);
@@ -92,10 +83,6 @@ public class TodoService implements ITodoService {
         }
     }
 
-    /**
-     * Updates a todo item with the given `title` and changes the title and description values to
-     * the `newTitle` and `newDescription` values.
-     */
     public void updateTodo(String title, String newTitle, String newDescription) {
         try {
             TodoModel existingTodo = getByTitle(title).get(0);
@@ -115,9 +102,6 @@ public class TodoService implements ITodoService {
         }
     }
 
-    /**
-     * Deletes the todo item matching the given title.
-     */
     public void deleteTodo(String title) {
         System.out.println("delete: " + title);
     }
