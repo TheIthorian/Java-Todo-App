@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class InputHandler implements IInputHandler {
-    InputHandler() {}
+    public InputHandler() {}
 
     public String awaitInput(String prompt) {
         Scanner scanner = new Scanner(System.in);
