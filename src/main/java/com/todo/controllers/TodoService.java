@@ -3,7 +3,7 @@ package com.todo.controllers;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import com.todo.Database;
+import com.todo.AbstractDatabase;
 import com.todo.ITodoService;
 import com.todo.models.TodoModel;
 import com.todo.models.TodoSelector;
@@ -11,18 +11,18 @@ import com.todo.models.User;
 
 public class TodoService implements ITodoService {
 
-    private Database database;
+    private AbstractDatabase database;
     private User user;
 
     public TodoSelector selector;
 
-    public TodoService(Database database, User user) {
+    public TodoService(AbstractDatabase database, User user) {
         this.database = database;
         this.user = user;
         selector = new TodoSelector(user);
     }
 
-    public void setDatabase(Database database) {
+    public void setDatabase(AbstractDatabase database) {
         this.database = database;
     }
 

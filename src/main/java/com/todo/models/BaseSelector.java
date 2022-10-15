@@ -2,12 +2,12 @@ package com.todo.models;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import com.todo.Database;
+import com.todo.AbstractDatabase;
 
 public abstract class BaseSelector {
     public Connection conn;
 
-    public void connect(Database database) throws SQLException {
+    public void connect(AbstractDatabase database) throws SQLException {
         this.conn = database.connect();
     }
 
