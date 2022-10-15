@@ -47,6 +47,5 @@ public class TodoModelTest {
         // Then
         Mockito.verify(mockStatement, Mockito.times(1)).execute(Mockito.anyString());
         Mockito.verify(mockStatement, Mockito.times(1)).close();
-        Mockito.verify(mockConn, Mockito.times(1)).close();
     }
 }

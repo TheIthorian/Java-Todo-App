@@ -22,6 +22,5 @@ public class TodoModel extends TodoSelector.TodoDto {
         final Statement statement = conn.createStatement();
         statement.execute(createTodo);
         statement.close();
-        conn.close();
     }
 }
