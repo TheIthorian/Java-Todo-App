@@ -62,4 +62,19 @@ public class TodoSelectorTest {
         assertEquals(existingTodoItems.get(0).userId, todoItems.get(0).userId);
         assertEquals(existingTodoItems.get(1).title, todoItems.get(1).title);
     }
+
+    @Test
+    public void selectAll_returnsEmptyTodoItems_whenNoneExist() throws SQLException {
+        // Given
+        setupDatabase();
+
+        TodoSelector selector = new TodoSelector(mockUser);
+        selector.connect(database);
+
+        // When
+        List<TodoDto> todoItems = selector.selectAll();
+
+        // Then
+        assertEquals(0, todoItems.size());
+    }
 }
