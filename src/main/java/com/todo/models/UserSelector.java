@@ -18,21 +18,21 @@ public class UserSelector extends BaseSelector {
         public String username;
         public String password;
 
-        UserDto() {}
+        public UserDto() {}
 
-        UserDto(ResultSet result) throws SQLException {
+        public UserDto(ResultSet result) throws SQLException {
             this.userId = result.getInt("userId");
             this.username = result.getString("username");
             this.password = result.getString("password");
         }
 
-        UserDto(int userId, String username, String password) {
+        public UserDto(int userId, String username, String password) {
             this.userId = userId;
             this.username = username;
             this.password = password;
         }
 
-        UserDto(UserDto user) {
+        public UserDto(UserDto user) {
             this.userId = user.userId;
             this.username = user.username;
             this.password = user.password;
