@@ -15,10 +15,6 @@ public class TodoModel extends TodoSelector.TodoDto {
         super(todo);
     }
 
-    public int getId() {
-        return this.todoId;
-    }
-
     public static void createTable(Connection conn) throws SQLException {
         final String createTodo = "CREATE TABLE IF NOT EXISTS todo ("
                 + "id integer PRIMARY KEY, title text NTO NULL, description text, userId integer REFERENCES users (userId))";

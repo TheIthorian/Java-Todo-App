@@ -38,6 +38,10 @@ public class TodoSelector extends BaseSelector {
             this.description = todo.description;
             this.userId = todo.userId;
         }
+
+        public int getId() {
+            return this.todoId;
+        }
     }
 
     public TodoSelector(User user) {
