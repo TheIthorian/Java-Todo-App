@@ -81,7 +81,6 @@ public class ConfigurationController {
      * file exists, a new one is created.
      */
     public void load() {
-        System.out.println("Loading configuration from file...");
         if (!resourceHandler.exists(configurationFilePath)) {
             createConfigurationFile();
         }
