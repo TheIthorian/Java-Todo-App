@@ -130,8 +130,12 @@ public class AppController {
             }
 
             for (TodoModel todo : todos) {
-                System.out.println(String.format("%s\t:\t%s:\t%s", todo.getId(), todo.title,
-                        todo.description));
+                if (todo.description != null) {
+                    System.out.println(String.format("[%s] :: %s :: %s", todo.getId(), todo.title,
+                            todo.description));
+                } else {
+                    System.out.println(String.format("[%s] :: %s\t", todo.getId(), todo.title));
+                }
             }
         }
     }
