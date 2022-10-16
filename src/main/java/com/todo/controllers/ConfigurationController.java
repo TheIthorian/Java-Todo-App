@@ -71,11 +71,24 @@ public class ConfigurationController {
     }
 
     /**
-     * Load configuration into memory using the set `configurationFilePath`.
+     * Load configuration into memory reading from the `configurationFilePath`. If no configuration
+     * file exists, a new one is created.
      */
     public void load() {
         System.out.println("Loading configuration from file...");
+        if (!resourceHandler.exists(configurationFilePath)) {
+            createConfigurationFile();
+        }
         JSONObject config = resourceHandler.readJSON(configurationFilePath);
+        setConfig(config);
+    }
+
+    public void createConfigurationFile() {
+        resourceHandler.create(configurationFilePath);
+        resourceHandler.writeText(configurationFilePath, "{}");
+    }
+
+    private void setConfig(JSONObject config) {
         username = (String) getValue(config, "username");
         password = (String) getValue(config, "password");
         databaseLocation = (String) getValue(config, "databaseLocation");
