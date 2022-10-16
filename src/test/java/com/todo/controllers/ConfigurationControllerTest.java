@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import java.util.HashMap;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import com.todo.DatabaseConfiguration;
 import com.todo.FileHandler;
 import com.todo.IResourceHandler;
 import org.json.JSONObject;
@@ -15,7 +16,7 @@ public class ConfigurationControllerTest {
 
     private static final String existingUsername = "my_username";
     private static final String existingPassword = "my_password";
-    private static final String existingDatabaseLocation = "my_databaseLocation";
+    private static final String existingDatabaseLocation = "my_databaseLocation/";
     private static final String CONFIG_FILE_NAME = "config.json";
 
     private static IResourceHandler mockResourceHandler;
@@ -193,6 +194,22 @@ public class ConfigurationControllerTest {
 
         // Then
         assertEquals(existingDatabaseLocation, configurationController.getDatabaseLocation());
+    }
+
+    @Test
+    public void getDatabaseConfiguration_returnsCorrectObject() {
+        // Given
+        setup();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockResourceHandler);
+        configurationController.setDatabaseLocation(existingDatabaseLocation);
+
+        // When
+        DatabaseConfiguration config = configurationController.getDatabaseConfiguration();
+
+        // Then
+        assertEquals(existingDatabaseLocation, config.databaseLocation);
+        assertEquals("todo.db", config.databaseFileName);
     }
 
     @Test
