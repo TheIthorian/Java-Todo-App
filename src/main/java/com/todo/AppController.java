@@ -112,8 +112,6 @@ public class AppController {
             return;
         }
 
-        System.out.println(arguments.get("-g"));
-
         if (arguments.contains("-a")) {
             todoService.addTodo(arguments.get("title"), arguments.get("description"));
         } else if (arguments.contains("-u")) {
@@ -132,7 +130,8 @@ public class AppController {
             }
 
             for (TodoModel todo : todos) {
-                System.out.println(todo.getId() + "\t: " + todo.title + " : " + todo.description);
+                System.out.println(String.format("%s\t:\t%s:\t%s", todo.getId(), todo.title,
+                        todo.description));
             }
         }
     }
