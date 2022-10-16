@@ -24,16 +24,14 @@ public class AppController {
             new ConfigurationController(fileHandler);
     public static ConfigurationValidator configurationValidator = new ConfigurationValidator();
 
-    public static DatabaseManager databaseManager =
-            new DatabaseManager(configurationController, fileHandler);
+    public static DatabaseManager databaseManager;
 
-    public static IUserAuthenticator userAuthenticator =
-            new UserAuthenticator(databaseManager.getDatabase());
-
-    public AppController() {}
+    public static IUserAuthenticator userAuthenticator;
 
     public void run(String[] args) {
         configurationController.load(); // configuration is empty until we read load from somewhere.
+        databaseManager = new DatabaseManager(configurationController, fileHandler);
+        userAuthenticator = new UserAuthenticator(databaseManager.getDatabase());
 
         processArguments(args);
 
