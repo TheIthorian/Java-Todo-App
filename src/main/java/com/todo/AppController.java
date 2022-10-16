@@ -22,8 +22,7 @@ public class AppController {
 
     public static IResourceHandler fileHandler = new FileHandler();
 
-    public static ConfigurationController configurationController =
-            new ConfigurationController(fileHandler);
+    public static ConfigurationController configurationController;
     public static ConfigurationValidator configurationValidator = new ConfigurationValidator();
 
     public static DatabaseManager databaseManager;
@@ -31,7 +30,9 @@ public class AppController {
     public static IUserAuthenticator userAuthenticator;
 
     public void run(String[] args) {
+        configurationController = new ConfigurationController(fileHandler);
         configurationController.load(); // configuration is empty until we read load from somewhere.
+
         databaseManager = new DatabaseManager(configurationController, fileHandler);
         userAuthenticator = new UserAuthenticator(databaseManager.getDatabase());
 
