@@ -99,6 +99,8 @@ public class AppController {
             } catch (UserService.UserValidationError e) {
                 System.out.println("Unhandled validation error: " + e.getMessage());
             }
+
+            return true;
         }
 
         return false;
