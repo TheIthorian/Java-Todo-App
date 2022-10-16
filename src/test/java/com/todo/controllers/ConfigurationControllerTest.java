@@ -67,7 +67,7 @@ public class ConfigurationControllerTest {
         // Then
         assertNull(configurationController.getUsername());
         assertNull(configurationController.getPassword());
-        assertNull(configurationController.getDatabaseLocation());
+        assertEquals(ConfigurationController.DEFAULT_DATABASE_LOCATION, configurationController.getDatabaseLocation());
         Mockito.verify(mockResourceHandler, Mockito.times(1)).readJSON(CONFIG_FILE_NAME);
     }
 
@@ -90,7 +90,7 @@ public class ConfigurationControllerTest {
 
         assertNull(configurationController.getUsername());
         assertNull(configurationController.getPassword());
-        assertNull(configurationController.getDatabaseLocation());
+        assertEquals(ConfigurationController.DEFAULT_DATABASE_LOCATION, configurationController.getDatabaseLocation());
         Mockito.verify(mockResourceHandler, Mockito.times(1)).readJSON(CONFIG_FILE_NAME);
     }
 
