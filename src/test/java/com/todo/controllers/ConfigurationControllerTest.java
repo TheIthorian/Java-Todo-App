@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import java.util.HashMap;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import com.todo.DatabaseConfiguration;
 import com.todo.FileHandler;
 import com.todo.IResourceHandler;
 import org.json.JSONObject;
@@ -15,9 +16,10 @@ public class ConfigurationControllerTest {
 
     private static final String existingUsername = "my_username";
     private static final String existingPassword = "my_password";
-    private static final String existingDatabaseLocation = "my_databaseLocation";
+    private static final String existingDatabaseLocation = "my_databaseLocation/";
+    private static final String CONFIG_FILE_NAME = "config.json";
 
-    private static IResourceHandler mockFileHandler;
+    private static IResourceHandler mockResourceHandler;
 
     private static JSONObject formatToJSON(String username, String password,
             String databaseLocation) {
@@ -29,8 +31,8 @@ public class ConfigurationControllerTest {
     }
 
     private static void setup() {
-        mockFileHandler = Mockito.mock(FileHandler.class);
-        Mockito.when(mockFileHandler.readJSON("config.json")).thenReturn(
+        mockResourceHandler = Mockito.mock(IResourceHandler.class);
+        Mockito.when(mockResourceHandler.readJSON(CONFIG_FILE_NAME)).thenReturn(
                 formatToJSON(existingUsername, existingPassword, existingDatabaseLocation));
     }
 
@@ -41,14 +43,14 @@ public class ConfigurationControllerTest {
 
         // When
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
         configurationController.load();
 
         // Then
         assertEquals(existingUsername, configurationController.getUsername());
         assertEquals(existingPassword, configurationController.getPassword());
         assertEquals(existingDatabaseLocation, configurationController.getDatabaseLocation());
-        Mockito.verify(mockFileHandler, Mockito.times(1)).readJSON("config.json");
+        Mockito.verify(mockResourceHandler, Mockito.times(1)).readJSON(CONFIG_FILE_NAME);
     }
 
     @Test
@@ -56,18 +58,41 @@ public class ConfigurationControllerTest {
         // Given
         setup();
 
-        Mockito.when(mockFileHandler.readJSON("config.json")).thenReturn(new JSONObject());
+        Mockito.when(mockResourceHandler.readJSON(CONFIG_FILE_NAME)).thenReturn(new JSONObject());
 
         // When
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
         configurationController.load();
 
         // Then
         assertNull(configurationController.getUsername());
         assertNull(configurationController.getPassword());
-        assertNull(configurationController.getDatabaseLocation());
-        Mockito.verify(mockFileHandler, Mockito.times(1)).readJSON("config.json");
+        assertEquals(ConfigurationController.DEFAULT_DATABASE_LOCATION, configurationController.getDatabaseLocation());
+        Mockito.verify(mockResourceHandler, Mockito.times(1)).readJSON(CONFIG_FILE_NAME);
+    }
+
+    @Test
+    public void createsNewConfiguration_whenConfigurationFileDoesNotExist() {
+        // Given
+        setup();
+
+        Mockito.when(mockResourceHandler.exists(anyString())).thenReturn(false);
+        Mockito.when(mockResourceHandler.readJSON(CONFIG_FILE_NAME)).thenReturn(new JSONObject());
+
+        // When
+        ConfigurationController configurationController =
+                new ConfigurationController(mockResourceHandler);
+        configurationController.load();
+
+        // Then
+        Mockito.verify(mockResourceHandler, Mockito.times(1)).create(CONFIG_FILE_NAME);
+        Mockito.verify(mockResourceHandler, Mockito.times(1)).writeText(CONFIG_FILE_NAME, "{}");
+
+        assertNull(configurationController.getUsername());
+        assertNull(configurationController.getPassword());
+        assertEquals(ConfigurationController.DEFAULT_DATABASE_LOCATION, configurationController.getDatabaseLocation());
+        Mockito.verify(mockResourceHandler, Mockito.times(1)).readJSON(CONFIG_FILE_NAME);
     }
 
     @Test
@@ -77,7 +102,7 @@ public class ConfigurationControllerTest {
         String newUsername = "my_new_username";
 
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
 
         // When
         configurationController.setUsername(newUsername);
@@ -92,7 +117,7 @@ public class ConfigurationControllerTest {
         String newUsername = null;
 
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
         configurationController.load();
 
         // When
@@ -109,7 +134,7 @@ public class ConfigurationControllerTest {
         String newPassword = "my_new_password";
 
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
 
         // When
         configurationController.setPassword(newPassword);
@@ -124,7 +149,7 @@ public class ConfigurationControllerTest {
         String newPassword = null;
 
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
         configurationController.load();
 
         // When
@@ -141,7 +166,7 @@ public class ConfigurationControllerTest {
         String newDatabaseLocation = "my_new_databaselocation";
 
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
 
         // When
         configurationController.setDatabaseLocation(newDatabaseLocation);
@@ -156,12 +181,12 @@ public class ConfigurationControllerTest {
         setup();
         String newDatabaseLocation = null;
 
-        mockFileHandler = Mockito.mock(FileHandler.class);
-        Mockito.when(mockFileHandler.readJSON("config.json")).thenReturn(
+        mockResourceHandler = Mockito.mock(FileHandler.class);
+        Mockito.when(mockResourceHandler.readJSON(CONFIG_FILE_NAME)).thenReturn(
                 formatToJSON(existingUsername, existingPassword, existingDatabaseLocation));
 
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
         configurationController.load();
 
         // When
@@ -172,6 +197,22 @@ public class ConfigurationControllerTest {
     }
 
     @Test
+    public void getDatabaseConfiguration_returnsCorrectObject() {
+        // Given
+        setup();
+        ConfigurationController configurationController =
+                new ConfigurationController(mockResourceHandler);
+        configurationController.setDatabaseLocation(existingDatabaseLocation);
+
+        // When
+        DatabaseConfiguration config = configurationController.getDatabaseConfiguration();
+
+        // Then
+        assertEquals(existingDatabaseLocation, config.databaseLocation);
+        assertEquals("todo.db", config.databaseFileName);
+    }
+
+    @Test
     public void saveToFile_savesTheCurrentConfigurationToFile() {
         // Given
         setup();
@@ -179,7 +220,7 @@ public class ConfigurationControllerTest {
         final String newPassword = "my_new_password";
 
         ConfigurationController configurationController =
-                new ConfigurationController(mockFileHandler);
+                new ConfigurationController(mockResourceHandler);
         configurationController.load();
 
         // When
@@ -189,7 +230,7 @@ public class ConfigurationControllerTest {
 
         // Then
         ArgumentCaptor<JSONObject> dataArgument = ArgumentCaptor.forClass(JSONObject.class);
-        Mockito.verify(mockFileHandler, Mockito.times(1)).writeJSON(anyString(),
+        Mockito.verify(mockResourceHandler, Mockito.times(1)).writeJSON(anyString(),
                 dataArgument.capture());
 
         JSONObject data = dataArgument.getValue();

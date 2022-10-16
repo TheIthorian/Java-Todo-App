@@ -16,6 +16,9 @@ public class ConfigurationController {
     private String databaseLocation = null;
     private IResourceHandler resourceHandler;
 
+    public static final String DEFAULT_DATABASE_LOCATION = "";
+    public static final String DATABASE_NAME = "todo.db";
+
     /**
      * Name of the json configuration file.
      */
@@ -46,11 +49,14 @@ public class ConfigurationController {
     }
 
     public String getDatabaseLocation() {
+        if (databaseLocation == null) {
+            return DEFAULT_DATABASE_LOCATION;
+        }
         return databaseLocation;
     }
 
     public DatabaseConfiguration getDatabaseConfiguration() {
-        return new DatabaseConfiguration(databaseLocation, "todo.db");
+        return new DatabaseConfiguration(getDatabaseLocation(), DATABASE_NAME);
     }
 
     /**
@@ -58,21 +64,37 @@ public class ConfigurationController {
      */
     public void save() {
         System.out.println("Saving configuration to file...");
+        JSONObject data = new JSONObject(buildDataMap());
+        resourceHandler.writeJSON(configurationFilePath, data);
+    }
+
+    private HashMap<String, String> buildDataMap() {
         HashMap<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("username", username);
         dataMap.put("password", password);
         dataMap.put("databaseLocation", databaseLocation);
-
-        JSONObject data = new JSONObject(dataMap);
-        resourceHandler.writeJSON(configurationFilePath, data);
+        return dataMap;
     }
 
     /**
-     * Load configuration into memory using the set `configurationFilePath`.
+     * Load configuration into memory reading from the `configurationFilePath`. If no configuration
+     * file exists, a new one is created.
      */
     public void load() {
         System.out.println("Loading configuration from file...");
+        if (!resourceHandler.exists(configurationFilePath)) {
+            createConfigurationFile();
+        }
         JSONObject config = resourceHandler.readJSON(configurationFilePath);
+        setConfig(config);
+    }
+
+    public void createConfigurationFile() {
+        resourceHandler.create(configurationFilePath);
+        resourceHandler.writeText(configurationFilePath, "{}");
+    }
+
+    private void setConfig(JSONObject config) {
         username = (String) getValue(config, "username");
         password = (String) getValue(config, "password");
         databaseLocation = (String) getValue(config, "databaseLocation");
