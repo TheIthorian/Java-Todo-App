@@ -61,7 +61,7 @@ public class ArgumentParser {
     public void printOptions() {
         System.out.println("-h\tprints this help message");
         for (Argument argument : arguments) {
-            System.out.println(argument.flag + "\t" + argument.description);
+            System.out.println(String.format("%s\t%s", argument.flag, argument.description));
         }
     }
 
