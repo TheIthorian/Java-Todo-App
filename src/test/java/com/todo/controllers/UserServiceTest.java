@@ -53,7 +53,8 @@ public class UserServiceTest {
         setup();
         final UserSelector.UserDto queryResult = makeDto(username, hashedPassword);
 
-        Mockito.when(mockSelector.selectByUsernamePassword(username, hashedPassword)).thenReturn(queryResult);
+        Mockito.when(mockSelector.selectByUsername(username)).thenReturn(queryResult);
+        Mockito.when(mockPasswordHasher.matches(password, hashedPassword)).thenReturn(true);
 
         // When
         UserService userService = new UserService(mockDatabase);
@@ -73,7 +74,7 @@ public class UserServiceTest {
         // Given
         setup();
 
-        Mockito.when(mockSelector.selectByUsernamePassword(anyString(), anyString())).thenReturn(null);
+        Mockito.when(mockSelector.selectByUsername(anyString())).thenReturn(null);
 
         // When
         UserService userService = new UserService(mockDatabase);
