@@ -25,7 +25,7 @@ public class Database extends AbstractDatabase {
     }
 
     public Connection connect() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:" + this.getDatabaseUrl());
+        return DriverManager.getConnection(String.format("jdbc:sqlite:%s", this.getDatabaseUrl()));
     }
 
     private String getDatabaseUrl() {
