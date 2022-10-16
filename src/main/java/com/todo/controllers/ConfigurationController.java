@@ -16,6 +16,8 @@ public class ConfigurationController {
     private String databaseLocation = null;
     private IResourceHandler resourceHandler;
 
+    public static final String DEFAULT_DATABASE_LOCATION = "/assets/todo.db";
+
     /**
      * Name of the json configuration file.
      */
@@ -46,6 +48,9 @@ public class ConfigurationController {
     }
 
     public String getDatabaseLocation() {
+        if (databaseLocation == null) {
+            return DEFAULT_DATABASE_LOCATION;
+        }
         return databaseLocation;
     }
 
