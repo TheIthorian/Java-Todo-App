@@ -27,7 +27,6 @@ public abstract class AbstractDatabase {
      * Executes a sql statement.
      */
     public void dml(String sql, Connection conn) throws SQLException {
-        System.out.println(sql);
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.executeUpdate();
         statement.close();

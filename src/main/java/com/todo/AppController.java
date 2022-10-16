@@ -8,6 +8,8 @@ import com.todo.controllers.TodoService;
 import com.todo.controllers.UserService;
 import com.todo.models.TodoModel;
 import com.todo.models.User;
+import com.todo.user.IUserAuthenticator;
+import com.todo.user.UserAuthenticator;
 
 // https://www.oracle.com/java/technologies/javase/javadoc-tool.html
 // https://www.baeldung.com/mockito-verify
@@ -20,8 +22,7 @@ public class AppController {
 
     public static IResourceHandler fileHandler = new FileHandler();
 
-    public static ConfigurationController configurationController =
-            new ConfigurationController(fileHandler);
+    public static ConfigurationController configurationController;
     public static ConfigurationValidator configurationValidator = new ConfigurationValidator();
 
     public static DatabaseManager databaseManager;
@@ -29,7 +30,9 @@ public class AppController {
     public static IUserAuthenticator userAuthenticator;
 
     public void run(String[] args) {
+        configurationController = new ConfigurationController(fileHandler);
         configurationController.load(); // configuration is empty until we read load from somewhere.
+
         databaseManager = new DatabaseManager(configurationController, fileHandler);
         userAuthenticator = new UserAuthenticator(databaseManager.getDatabase());
 
@@ -97,6 +100,8 @@ public class AppController {
             } catch (UserService.UserValidationError e) {
                 System.out.println("Unhandled validation error: " + e.getMessage());
             }
+
+            return true;
         }
 
         return false;
@@ -106,8 +111,6 @@ public class AppController {
         if (!arguments.contains(Arrays.asList("-a", "-u", "-d", "-g"))) {
             return;
         }
-
-        System.out.println(arguments.get("-g"));
 
         if (arguments.contains("-a")) {
             todoService.addTodo(arguments.get("title"), arguments.get("description"));
@@ -127,7 +130,16 @@ public class AppController {
             }
 
             for (TodoModel todo : todos) {
-                System.out.println(todo.getId() + "\t: " + todo.title + " : " + todo.description);
+                if (todo.description != null) {
+                    System.out.println(String.format("[%s] :: %s :: %s", todo.getId(), todo.title,
+                            todo.description));
+                } else {
+                    System.out.println(String.format("[%s] :: %s\t", todo.getId(), todo.title));
+                }
+            }
+
+            if (todos.size() == 0) {
+                System.out.println("No todo items found.");
             }
         }
     }

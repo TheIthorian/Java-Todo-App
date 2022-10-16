@@ -1,4 +1,4 @@
-package com.todo;
+package com.todo.user;
 
 import com.todo.models.User;
 
@@ -9,10 +9,10 @@ public interface IUserAuthenticator {
      * @param user - The user to be authenticated
      * @return true if the user was successfully authenticated
      */
-    public boolean authenticate(User user);
+    boolean authenticate(User user);
 
     /**
      * Returns a user matching the `username` and `password`. Returns `null` if no user is found.
      */
-    public User getUser(String username, String password);
+    User getUser(String username, String password);
 }

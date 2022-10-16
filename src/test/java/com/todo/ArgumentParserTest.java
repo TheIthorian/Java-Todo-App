@@ -26,8 +26,6 @@ public class ArgumentParserTest {
         ArgumentParser argumentParser = new ArgumentParser();
         String[] args = new String[] { "-flag", "username=my_username" };
 
-        System.out.println(args[0]);
-
         // When
         ArgumentCollection result = argumentParser.readArgs(args);
 

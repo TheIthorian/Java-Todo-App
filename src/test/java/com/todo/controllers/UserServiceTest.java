@@ -13,18 +13,29 @@ import org.mockito.Mockito;
 import com.todo.Database;
 import com.todo.models.UserSelector;
 import com.todo.models.UserSelector.UserDto;
+import com.todo.util.IHasher;
 import com.todo.models.User;
 
 public class UserServiceTest {
     private static Database mockDatabase;
 
     private static UserSelector mockSelector;
+    private static IHasher mockPasswordHasher;
+
+    private final String username = "my username";
+    private final String password = "my password";
+    private final String salt = "salt";
+    private final String hashedPassword = "My hashed password";
 
     private void setup() throws Exception {
         mockDatabase = Mockito.mock(Database.class);
+        mockPasswordHasher = Mockito.mock(IHasher.class);
 
         Connection connection = Mockito.mock(Connection.class);
         Mockito.when(mockDatabase.connect()).thenReturn(connection);
+
+        Mockito.when(mockPasswordHasher.salt()).thenReturn(salt);
+        Mockito.when(mockPasswordHasher.hash(password, salt)).thenReturn(hashedPassword);
 
         mockSelector = Mockito.mock(UserSelector.class);
     }
@@ -40,21 +51,21 @@ public class UserServiceTest {
     public void getUser_successfullyReturnsUser() throws Exception {
         // Given
         setup();
-        final String username = "My user username";
-        final String password = "My user password";
+        final UserSelector.UserDto queryResult = makeDto(username, hashedPassword);
 
-        final UserSelector.UserDto queryResult = makeDto(username, password);
-
-        Mockito.when(mockSelector.selectByUsernamePassword(username, password)).thenReturn(queryResult);
+        Mockito.when(mockSelector.selectByUsername(username)).thenReturn(queryResult);
+        Mockito.when(mockPasswordHasher.matches(password, hashedPassword)).thenReturn(true);
 
         // When
         UserService userService = new UserService(mockDatabase);
         userService.selector = mockSelector;
+        userService.passwordHasher = mockPasswordHasher;
         User result = userService.getUser(username, password);
 
         // Then
         assertEquals(username, result.username);
-        assertEquals(password, result.password);
+        assertEquals(hashedPassword, result.password);
+        verify(mockSelector, times(1)).connect(mockDatabase);
         verify(mockSelector, times(1)).disconnect();
     }
 
@@ -62,10 +73,8 @@ public class UserServiceTest {
     public void getUser_returnsNull_whenNoUserIsFound() throws Exception {
         // Given
         setup();
-        final String username = "My user username";
-        final String password = "My user password";
 
-        Mockito.when(mockSelector.selectByUsernamePassword(anyString(), anyString())).thenReturn(null);
+        Mockito.when(mockSelector.selectByUsername(anyString())).thenReturn(null);
 
         // When
         UserService userService = new UserService(mockDatabase);
@@ -74,6 +83,7 @@ public class UserServiceTest {
 
         // Then
         assertNull(result);
+        verify(mockSelector, times(1)).connect(mockDatabase);
         verify(mockSelector, times(1)).disconnect();
     }
 
@@ -81,13 +91,12 @@ public class UserServiceTest {
     public void addUser_successfullyAddsUser() throws Exception {
         // Given
         setup();
-        final String username = "My user username";
-        final String password = "My user password";
         final ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
 
         // When
         UserService userService = new UserService(mockDatabase);
         userService.selector = mockSelector;
+        userService.passwordHasher = mockPasswordHasher;
         userService.addUser(username, password);
 
         // Then
@@ -95,7 +104,8 @@ public class UserServiceTest {
 
         User user = userCaptor.getValue();
         assertEquals(username, user.username);
-        assertEquals(password, user.password);
+        assertEquals(hashedPassword, user.password);
+        verify(mockSelector, times(1)).connect(mockDatabase);
         verify(mockSelector, times(1)).disconnect();
     }
 
@@ -103,8 +113,6 @@ public class UserServiceTest {
     public void addUser_throwsErrorWhenUserAlreadyExists() throws Exception {
         // Given
         setup();
-        final String username = "My user username";
-        final String password = "My user username";
         final UserDto existingUser = makeDto(username, password);
 
         Mockito.when(mockSelector.selectByUsername(anyString())).thenReturn(existingUser);
@@ -118,6 +126,7 @@ public class UserServiceTest {
         } catch (UserService.UserValidationErrors.UsernameAlreadyExists e) {
             
         }
+        verify(mockSelector, times(1)).connect(mockDatabase);
         verify(mockSelector, times(1)).disconnect();
     }
 }
