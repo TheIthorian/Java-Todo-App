@@ -34,8 +34,6 @@ public class AppController {
 
     public void run(String[] args) {
         configurationController.load(); // configuration is empty until we read load from somewhere.
-        if (!configurationValidator.isValid(configurationController))
-            return;
 
         processArguments(args);
 
@@ -46,10 +44,17 @@ public class AppController {
 
         ArgumentCollection arguments = argumentParser.readArgs(args);
 
+        // Do not further process arguments if help is present.
         if (processHelpOperation(arguments, argumentParser))
             return;
 
-        processConfigurationOperation(arguments);
+        // Do not further process arguments if configuration is changed.
+        if (processConfigurationOperation(arguments))
+            return;
+
+        // Do not further process arguments if configuration is invalid.
+        if (!configurationValidator.isValid(configurationController))
+            return;
 
         User user = userAuthenticator.getUser(configurationController.getUsername(),
                 configurationController.getPassword());
@@ -69,19 +74,20 @@ public class AppController {
         return false;
     }
 
-    public void processConfigurationOperation(ArgumentCollection arguments) {
+    public boolean processConfigurationOperation(ArgumentCollection arguments) {
         if (arguments.contains("-cf")) {
             configurationController.setUsername(arguments.get("username"));
             configurationController.setPassword(arguments.get("password"));
             configurationController.setDatabaseLocation(arguments.get("db"));
             configurationController.save();
+            return true;
         }
 
         if (arguments.contains("-addUser")) {
             // Are we able to add a new user?
             ConfigurationValidator validator = new ConfigurationValidator();
             if (!validator.isValid(configurationController)) {
-                return;
+                return true;
             }
 
             UserService userService = new UserService(databaseManager.getDatabase());
@@ -94,6 +100,8 @@ public class AppController {
                 System.out.println("Unhandled validation error: " + e.getMessage());
             }
         }
+
+        return false;
     }
 
     public void processTodoOperation(ArgumentCollection arguments, TodoService todoService) {
