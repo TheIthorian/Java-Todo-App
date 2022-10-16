@@ -58,13 +58,16 @@ public class ConfigurationController {
      */
     public void save() {
         System.out.println("Saving configuration to file...");
+        JSONObject data = new JSONObject(buildDataMap());
+        resourceHandler.writeJSON(configurationFilePath, data);
+    }
+
+    private HashMap<String, String> buildDataMap() {
         HashMap<String, String> dataMap = new HashMap<String, String>();
         dataMap.put("username", username);
         dataMap.put("password", password);
         dataMap.put("databaseLocation", databaseLocation);
-
-        JSONObject data = new JSONObject(dataMap);
-        resourceHandler.writeJSON(configurationFilePath, data);
+        return dataMap;
     }
 
     /**
