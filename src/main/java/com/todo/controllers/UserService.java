@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import com.todo.AbstractDatabase;
 import com.todo.models.User;
 import com.todo.models.UserSelector;
+import com.todo.models.UserSelector.UserDto;
 import com.todo.util.Hasher;
 import com.todo.util.IHasher;
 
@@ -31,7 +32,8 @@ public class UserService {
      * Returns `true` if the username and password combination matches with an existing user.
      */
     public boolean isPasswordCorrect(String username, String password) throws SQLException {
-        return (selector.selectByUsernamePassword(username, hashPassword(password)) != null);
+        UserDto user = selector.selectByUsername(username);
+        return passwordHasher.matches(password, user.password);
     }
 
     /**
@@ -40,16 +42,14 @@ public class UserService {
     public User getUser(String username, String password) {
         try {
             selector.connect(database);
-            UserSelector.UserDto user =
-                    selector.selectByUsernamePassword(username, hashPassword(password));
+            UserSelector.UserDto user = selector.selectByUsername(username);
             selector.disconnect();
 
-            if (user != null) {
-                return new User(user);
+            if (user == null || !passwordHasher.matches(password, user.password)) {
+                return null;
             }
 
-            return null;
-
+            return new User(user);
         } catch (SQLException e) {
             System.out.print("Unable to get user " + username);
             e.printStackTrace();
