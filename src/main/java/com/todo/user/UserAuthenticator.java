@@ -1,14 +1,14 @@
 package com.todo.user;
 
-import com.todo.Database;
+import com.todo.AbstractDatabase;
 import com.todo.controllers.UserService;
 import com.todo.models.User;
 
 public class UserAuthenticator implements IUserAuthenticator {
-    public Database database;
+    public AbstractDatabase database;
     public UserService userService;
 
-    public UserAuthenticator(Database database) {
+    public UserAuthenticator(AbstractDatabase database) {
         this.database = database;
         this.userService = new UserService(database);
     }
