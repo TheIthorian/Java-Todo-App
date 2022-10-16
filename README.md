@@ -115,7 +115,23 @@ Read more here [https://www.cs.odu.edu/~zeil/cs382/latest/Public/runAnywhere/ind
 
 -   Set your username and password
     ```sh
-    java Todo --username=<my_username> --password=<my_password>
+    java -jar todo-0.0.1.jar -cf -username=<my_username> -password=<my_password>
+    ```
+-   Add the user
+
+    ```sh
+    java -jar todo-0.0.1.jar -addUser
+    ```
+
+-   Add a todo item
+
+    ```sh
+    java -jar todo-0.0.1.jar -a title="Some title" description="some description"
+    ```
+
+-   Get all items
+    ```sh
+    java -jar todo-0.0.1.jar -g
     ```
 
 _For more examples, please refer to the [Documentation](https://github.com/TheIthorian/Java-Todo-App)_
