@@ -137,6 +137,10 @@ public class AppController {
                     System.out.println(String.format("[%s] :: %s\t", todo.getId(), todo.title));
                 }
             }
+
+            if (todos.size() == 0) {
+                System.out.println("No todo items found.");
+            }
         }
     }
 
