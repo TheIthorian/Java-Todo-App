@@ -1,4 +1,4 @@
-package com.todo;
+package com.todo.user;
 
 import com.todo.models.User;
 

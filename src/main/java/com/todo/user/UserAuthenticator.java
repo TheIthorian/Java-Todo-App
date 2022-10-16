@@ -1,5 +1,6 @@
-package com.todo;
+package com.todo.user;
 
+import com.todo.Database;
 import com.todo.controllers.UserService;
 import com.todo.models.User;
 
@@ -7,7 +8,7 @@ public class UserAuthenticator implements IUserAuthenticator {
     public Database database;
     public UserService userService;
 
-    UserAuthenticator(Database database) {
+    public UserAuthenticator(Database database) {
         this.database = database;
         this.userService = new UserService(database);
     }

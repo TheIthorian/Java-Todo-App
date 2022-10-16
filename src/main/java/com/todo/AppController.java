@@ -8,6 +8,8 @@ import com.todo.controllers.TodoService;
 import com.todo.controllers.UserService;
 import com.todo.models.TodoModel;
 import com.todo.models.User;
+import com.todo.user.IUserAuthenticator;
+import com.todo.user.UserAuthenticator;
 
 // https://www.oracle.com/java/technologies/javase/javadoc-tool.html
 // https://www.baeldung.com/mockito-verify
