@@ -2,10 +2,15 @@ package com.todo;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import com.todo.controllers.ArgumentController;
 import com.todo.controllers.ConfigurationController;
 import com.todo.controllers.TodoService;
 import com.todo.controllers.UserService;
+import com.todo.io.IInputHandler;
+import com.todo.io.IOutputHandler;
+import com.todo.io.InputHandler;
+import com.todo.io.OutputHandler;
 import com.todo.models.TodoModel;
 import com.todo.models.User;
 import com.todo.user.IUserAuthenticator;
@@ -19,6 +24,7 @@ public class AppController {
     public static ArgumentController argumentController = new ArgumentController(argumentParser);
 
     public static IInputHandler inputHandler = new InputHandler();
+    public static IOutputHandler outputHandler = new OutputHandler();
 
     public static IResourceHandler fileHandler = new FileHandler();
 
@@ -60,8 +66,10 @@ public class AppController {
         User user = userAuthenticator.getUser(configurationController.getUsername(),
                 configurationController.getPassword());
 
-        if (user == null)
+        if (user == null) {
+            outputHandler.write("Credentials not recognised");
             return;
+        }
 
         processTodoOperation(arguments, new TodoService(databaseManager.getDatabase(), user));
         processNoOperation(arguments, user);
@@ -88,6 +96,11 @@ public class AppController {
             // Are we able to add a new user?
             ConfigurationValidator validator = new ConfigurationValidator();
             if (!validator.isValid(configurationController)) {
+                Map<String, String> errors = validator.getErrors();
+                for (String key : errors.keySet()) {
+                    outputHandler.write(key);
+                    outputHandler.write("Error: " + String.format(errors.get(key), key));
+                }
                 return true;
             }
 
@@ -96,9 +109,9 @@ public class AppController {
                 userService.addUser(configurationController.getUsername(),
                         configurationController.getPassword());
             } catch (UserService.UserValidationErrors.UsernameAlreadyExists e) {
-                System.out.println("Username already exists.");
+                outputHandler.write("Username already exists.");
             } catch (UserService.UserValidationError e) {
-                System.out.println("Unhandled validation error: " + e.getMessage());
+                outputHandler.write("Unhandled validation error: " + e.getMessage());
             }
 
             return true;
@@ -131,15 +144,15 @@ public class AppController {
 
             for (TodoModel todo : todos) {
                 if (todo.description != null) {
-                    System.out.println(String.format("[%s] :: %s :: %s", todo.getId(), todo.title,
+                    outputHandler.write(String.format("[%s] :: %s :: %s", todo.getId(), todo.title,
                             todo.description));
                 } else {
-                    System.out.println(String.format("[%s] :: %s\t", todo.getId(), todo.title));
+                    outputHandler.write(String.format("[%s] :: %s\t", todo.getId(), todo.title));
                 }
             }
 
             if (todos.size() == 0) {
-                System.out.println("No todo items found.");
+                outputHandler.write("No todo items found.");
             }
         }
     }
