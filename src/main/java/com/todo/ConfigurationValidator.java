@@ -30,8 +30,6 @@ public class ConfigurationValidator {
                     NOT_DEFINED + configurationController.configurationFilePath, "password"));
         }
 
-        printErrors();
-
         return errors.isEmpty();
     }
 
@@ -41,12 +39,6 @@ public class ConfigurationValidator {
      */
     public Map<String, String> getErrors() {
         return this.errors;
-    }
-
-    private void printErrors() {
-        for (String key : errors.keySet()) {
-            System.out.println("Error: " + String.format(errors.get(key), key));
-        }
     }
 
     private String formatError(String format, String value) {

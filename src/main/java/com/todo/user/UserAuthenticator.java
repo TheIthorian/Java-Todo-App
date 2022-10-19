@@ -21,7 +21,6 @@ public class UserAuthenticator implements IUserAuthenticator {
         User user = userService.getUser(username, password);
 
         if (user == null || !authenticate(user)) {
-            System.out.println("Credentials not recognised.");
             return null;
         }
 

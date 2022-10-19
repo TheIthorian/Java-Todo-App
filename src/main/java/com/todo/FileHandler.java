@@ -27,11 +27,7 @@ public class FileHandler implements IResourceHandler {
     public void create(String pathname) {
         try {
             File file = new File(pathname);
-            if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
-            } else {
-                System.out.println("File already exists.");
-            }
+            file.createNewFile();
         } catch (IOException e) {
             System.out.println("An error occurred trying to create file: " + pathname);
             e.printStackTrace();
