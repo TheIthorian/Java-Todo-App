@@ -1,4 +1,4 @@
-package com.todo;
+package com.todo.io;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -14,7 +14,7 @@ public class InputHandler implements IInputHandler {
             System.out.println(prompt);
             inputValue = scanner.nextLine();
         } catch (IllegalStateException | NoSuchElementException e) {
-            System.out.println("System.in was closed; exiting");
+            e.printStackTrace();
         } finally {
             scanner.close();
         }
