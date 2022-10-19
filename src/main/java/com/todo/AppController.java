@@ -1,17 +1,14 @@
 package com.todo;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import com.todo.controllers.ArgumentController;
 import com.todo.controllers.ConfigurationController;
+import com.todo.controllers.Operator;
 import com.todo.controllers.TodoService;
 import com.todo.controllers.UserService;
 import com.todo.io.IInputHandler;
 import com.todo.io.IOutputHandler;
 import com.todo.io.InputHandler;
 import com.todo.io.OutputHandler;
-import com.todo.models.TodoModel;
 import com.todo.models.User;
 import com.todo.user.IUserAuthenticator;
 import com.todo.user.UserAuthenticator;
@@ -50,13 +47,16 @@ public class AppController {
     public void processArguments(String[] args) {
 
         ArgumentCollection arguments = argumentParser.readArgs(args);
+        Operator operator = new Operator(arguments, outputHandler);
 
         // Do not further process arguments if help is present.
-        if (processHelpOperation(arguments, argumentParser))
+        if (operator.processHelpOperation(argumentParser))
             return;
 
         // Do not further process arguments if configuration is changed.
-        if (processConfigurationOperation(arguments))
+        UserService userService = new UserService(databaseManager.getDatabase());
+        if (operator.processConfigurationOperation(configurationController, configurationValidator,
+                userService))
             return;
 
         // Do not further process arguments if configuration is invalid.
@@ -71,90 +71,9 @@ public class AppController {
             return;
         }
 
-        processTodoOperation(arguments, new TodoService(databaseManager.getDatabase(), user));
+        TodoService todoService = new TodoService(databaseManager.getDatabase(), user);
+        operator.processTodoOperation(todoService);
         processNoOperation(arguments, user);
-    }
-
-    public boolean processHelpOperation(ArgumentCollection arguments, ArgumentParser parser) {
-        if (arguments.contains("-h")) {
-            parser.printOptions();
-            return true;
-        }
-        return false;
-    }
-
-    public boolean processConfigurationOperation(ArgumentCollection arguments) {
-        if (arguments.contains("-cf")) {
-            configurationController.setUsername(arguments.get("username"));
-            configurationController.setPassword(arguments.get("password"));
-            configurationController.setDatabaseLocation(arguments.get("db"));
-            configurationController.save();
-            return true;
-        }
-
-        if (arguments.contains("-addUser")) {
-            // Are we able to add a new user?
-            ConfigurationValidator validator = new ConfigurationValidator();
-            if (!validator.isValid(configurationController)) {
-                Map<String, String> errors = validator.getErrors();
-                for (String key : errors.keySet()) {
-                    outputHandler.write(key);
-                    outputHandler.write("Error: " + String.format(errors.get(key), key));
-                }
-                return true;
-            }
-
-            UserService userService = new UserService(databaseManager.getDatabase());
-            try {
-                userService.addUser(configurationController.getUsername(),
-                        configurationController.getPassword());
-            } catch (UserService.UserValidationErrors.UsernameAlreadyExists e) {
-                outputHandler.write("Username already exists.");
-            } catch (UserService.UserValidationError e) {
-                outputHandler.write("Unhandled validation error: " + e.getMessage());
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public void processTodoOperation(ArgumentCollection arguments, TodoService todoService) {
-        if (!arguments.contains(Arrays.asList("-a", "-u", "-d", "-g"))) {
-            return;
-        }
-
-        if (arguments.contains("-a")) {
-            todoService.addTodo(arguments.get("title"), arguments.get("description"));
-        } else if (arguments.contains("-u")) {
-            todoService.updateTodo(arguments.get("title"), arguments.get("newTitle"),
-                    arguments.get("description"));
-        } else if (arguments.contains("-d")) {
-            todoService.deleteTodo(arguments.get("title"));
-        } else if (arguments.contains("-g")) {
-
-            List<TodoModel> todos;
-
-            if (arguments.contains("title")) {
-                todos = todoService.getByTitle(arguments.get("title"));
-            } else {
-                todos = todoService.getAll();
-            }
-
-            for (TodoModel todo : todos) {
-                if (todo.description != null) {
-                    outputHandler.write(String.format("[%s] :: %s :: %s", todo.getId(), todo.title,
-                            todo.description));
-                } else {
-                    outputHandler.write(String.format("[%s] :: %s\t", todo.getId(), todo.title));
-                }
-            }
-
-            if (todos.size() == 0) {
-                outputHandler.write("No todo items found.");
-            }
-        }
     }
 
     private void processNoOperation(ArgumentCollection arguments, User user) {
@@ -171,6 +90,6 @@ public class AppController {
     }
 
     public void terminate() {
-        inputHandler.awaitInput("Prees enter to close...");
+        inputHandler.awaitInput("\nPrees enter to close...");
     }
 }
