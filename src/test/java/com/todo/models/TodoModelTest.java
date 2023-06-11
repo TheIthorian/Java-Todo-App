@@ -15,7 +15,6 @@ public class TodoModelTest {
     private void setup() {
         mockUser = Mockito.mock(User.class);
         Mockito.when(mockUser.getId()).thenReturn(USER_ID);
-
     }
 
     @Test
@@ -34,7 +33,7 @@ public class TodoModelTest {
         assertEquals(model.userId, USER_ID);
     }
 
-    @Test 
+    @Test
     public void createTable_correctlyCreatesDatabaseTable() throws SQLException {
         // Given
         Connection mockConn = Mockito.mock(Connection.class);
