@@ -3,8 +3,7 @@ package com.todo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,7 +21,8 @@ public class ConfigurationValidatorTest {
     @BeforeClass
     public static void setup() {
         mockConfigurationController.configurationFilePath = "config.json";
-        Mockito.when(mockConfigurationController.getDatabaseLocation()).thenReturn(databaseLocation);
+        Mockito.when(mockConfigurationController.getDatabaseLocation())
+                .thenReturn(databaseLocation);
         Mockito.when(mockConfigurationController.getUsername()).thenReturn(username);
         Mockito.when(mockConfigurationController.getPassword()).thenReturn(password);
     }
@@ -34,7 +34,7 @@ public class ConfigurationValidatorTest {
         ConfigurationValidator validator = new ConfigurationValidator();
 
         // When / Then
-        assertTrue(validator.isValid(mockConfigurationController));
+        assertTrue(validator.validate(mockConfigurationController).isValid);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ConfigurationValidatorTest {
         ConfigurationValidator validator = new ConfigurationValidator();
 
         // When / Then
-        assertFalse(validator.isValid(mockConfigurationController));
+        assertFalse(validator.validate(mockConfigurationController).isValid);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class ConfigurationValidatorTest {
         ConfigurationValidator validator = new ConfigurationValidator();
 
         // When / Then
-        assertFalse(validator.isValid(mockConfigurationController));
+        assertFalse(validator.validate(mockConfigurationController).isValid);
     }
 
     @Test
@@ -67,10 +67,10 @@ public class ConfigurationValidatorTest {
         ConfigurationValidator validator = new ConfigurationValidator();
 
         // When / Then
-        assertFalse(validator.isValid(mockConfigurationController));
+        assertFalse(validator.validate(mockConfigurationController).isValid);
     }
 
-    @Test 
+    @Test
     public void getErrors_returnsAllErrors() {
         // Given
         Mockito.when(mockConfigurationController.getDatabaseLocation()).thenReturn(null);
@@ -78,16 +78,15 @@ public class ConfigurationValidatorTest {
         Mockito.when(mockConfigurationController.getPassword()).thenReturn(null);
         ConfigurationValidator validator = new ConfigurationValidator();
 
-        final Map<String, String> expectedErrors = new HashMap<String, String>();
-        expectedErrors.put("databaseLocation", "databaseLocation is not specified in config.json");
-        expectedErrors.put("username", "username is not specified in config.json");
-        expectedErrors.put("password", "password is not specified in config.json");
+        final ArrayList<String> expectedErrors = new ArrayList<String>();
+        expectedErrors.add("databaseLocation is not specified in config.json");
+        expectedErrors.add("username is not specified in config.json");
+        expectedErrors.add("password is not specified in config.json");
 
-        // When 
-        validator.isValid(mockConfigurationController);
-        Map<String, String> errors = validator.getErrors();
-        
+        // When
+        ValidationResult result = validator.validate(mockConfigurationController);
+
         // Then
-        assertEquals(expectedErrors, errors);
+        assertEquals(expectedErrors, result.errors);
     }
 }
