@@ -11,7 +11,7 @@ public class ArgumentControllerTest {
         ArgumentParser parser = new ArgumentParser();
 
         // When
-        new ArgumentController(parser);
+        ArgumentController.addOptions(parser);
 
         // Then
         assertEquals(5, parser.getOptions().size());
