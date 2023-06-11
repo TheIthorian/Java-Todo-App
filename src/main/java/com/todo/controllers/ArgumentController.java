@@ -3,14 +3,7 @@ package com.todo.controllers;
 import com.todo.ArgumentParser;
 
 public class ArgumentController {
-    ArgumentParser parser;
-
-    public ArgumentController(ArgumentParser parser) {
-        this.parser = parser;
-        this.addOptions();
-    }
-
-    private void addOptions() {
+    public static void addOptions(ArgumentParser parser) {
         parser.addOption("-cf",
                 "Update local configuration. Expects (optional) username, (optional) password, (optional) db inputs.");
         parser.addOption("-addUser",
