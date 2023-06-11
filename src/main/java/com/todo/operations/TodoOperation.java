@@ -14,8 +14,12 @@ public class TodoOperation {
 
     public void process(ArgumentCollection arguments) {
         if (arguments.contains("-a")) {
-            todoService.addTodo(arguments.get("title"), arguments.get("description"));
-            System.out.println("Todo item added.");
+            String title = arguments.get("title");
+            if (title == null) {
+                System.out.println("Title is required.");
+                return;
+            }
+            todoService.addTodo(title, arguments.get("description"));
             return;
         }
 
