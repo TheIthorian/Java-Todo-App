@@ -36,6 +36,7 @@ public class ConfigurationOperation {
             try {
                 userService.addUser(configurationController.getUsername(),
                         configurationController.getPassword());
+                System.out.println("User: '" + configurationController.getUsername() + "'' added.");
             } catch (UserService.UserValidationErrors.UsernameAlreadyExists e) {
                 System.out.println("Username already exists.");
             } catch (UserService.UserValidationError e) {

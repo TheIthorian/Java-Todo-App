@@ -84,6 +84,6 @@ public class AppController {
     }
 
     public void terminate() {
-        inputHandler.awaitInput("Prees enter to close...");
+        inputHandler.awaitInput("Press enter to close...");
     }
 }
