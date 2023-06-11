@@ -28,7 +28,7 @@ public class ConfigurationOperation {
         if (arguments.contains("-addUser")) {
             // Are we able to add a new user?
             ConfigurationValidator validator = new ConfigurationValidator();
-            if (!validator.isValid(configurationController)) {
+            if (!validator.validate(configurationController).isValid) {
                 return true;
             }
 

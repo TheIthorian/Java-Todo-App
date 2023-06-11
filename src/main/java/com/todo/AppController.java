@@ -53,8 +53,12 @@ public class AppController {
             return;
 
         // Do not further process arguments if configuration is invalid.
-        if (!configurationValidator.isValid(configurationController))
+        ValidationResult configurationValidationResult =
+                configurationValidator.validate(configurationController);
+        if (!configurationValidationResult.isValid) {
+            configurationValidator.printErrors(configurationValidationResult);
             return;
+        }
 
         User user = userAuthenticator.getUser(configurationController.getUsername(),
                 configurationController.getPassword());

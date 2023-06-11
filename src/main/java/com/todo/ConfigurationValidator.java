@@ -1,51 +1,39 @@
 package com.todo;
 
-import java.util.HashMap;
-import java.util.Map;
 import com.todo.controllers.ConfigurationController;
 
 /**
  * Class to validate tha the local configuration is valid.
  */
 public class ConfigurationValidator {
-
     private String NOT_DEFINED = "%s is not specified in ";
-    private HashMap<String, String> errors = new HashMap<String, String>();
 
-    /**
-     * Returns `false` and prints any validation errors if there is any local misconfiguration.
-     */
-    public boolean isValid(ConfigurationController configurationController) {
+    public ValidationResult validate(ConfigurationController configurationController) {
+        ValidationResult validationResult = ValidationResult.success();
+
         if (configurationController.getDatabaseLocation() == null) {
-            errors.put("databaseLocation",
+            validationResult.addError(
                     formatError(NOT_DEFINED + configurationController.configurationFilePath,
                             "databaseLocation"));
         }
+
         if (configurationController.getUsername() == null) {
-            errors.put("username", formatError(
+            validationResult.addError(formatError(
                     NOT_DEFINED + configurationController.configurationFilePath, "username"));
         }
+
         if (configurationController.getPassword() == null) {
-            errors.put("password", formatError(
+            validationResult.addError(formatError(
                     NOT_DEFINED + configurationController.configurationFilePath, "password"));
         }
 
-        printErrors();
+        return validationResult;
 
-        return errors.isEmpty();
     }
 
-    /**
-     * Returns all errors found after validating the configurationController. Must be ran after
-     * `isValid`.
-     */
-    public Map<String, String> getErrors() {
-        return this.errors;
-    }
-
-    private void printErrors() {
-        for (String key : errors.keySet()) {
-            System.out.println("Error: " + String.format(errors.get(key), key));
+    public void printErrors(ValidationResult validationResult) {
+        for (String error : validationResult.errors) {
+            System.out.println("Error: " + error);
         }
     }
 
