@@ -1,13 +1,13 @@
 package com.todo;
 
 import java.util.Arrays;
-import java.util.List;
 import com.todo.controllers.ArgumentController;
 import com.todo.controllers.ConfigurationController;
 import com.todo.controllers.TodoService;
-import com.todo.controllers.UserService;
-import com.todo.models.TodoModel;
 import com.todo.models.User;
+import com.todo.operations.ConfigurationOperation;
+import com.todo.operations.TodoOperation;
+import com.todo.operations.TodoWizard;
 import com.todo.user.IUserAuthenticator;
 import com.todo.user.UserAuthenticator;
 
@@ -16,10 +16,8 @@ import com.todo.user.UserAuthenticator;
 
 public class AppController {
     public static ArgumentParser argumentParser = new ArgumentParser();
-    public static ArgumentController argumentController = new ArgumentController(argumentParser);
 
     public static IInputHandler inputHandler = new InputHandler();
-
     public static IResourceHandler fileHandler = new FileHandler();
 
     public static ConfigurationController configurationController;
@@ -30,6 +28,8 @@ public class AppController {
     public static IUserAuthenticator userAuthenticator;
 
     public void run(String[] args) {
+        ArgumentController.addOptions(argumentParser);
+
         configurationController = new ConfigurationController(fileHandler);
         configurationController.load(); // configuration is empty until we read load from somewhere.
 
@@ -42,7 +42,6 @@ public class AppController {
     }
 
     public void processArguments(String[] args) {
-
         ArgumentCollection arguments = argumentParser.readArgs(args);
 
         // Do not further process arguments if help is present.
@@ -50,7 +49,7 @@ public class AppController {
             return;
 
         // Do not further process arguments if configuration is changed.
-        if (processConfigurationOperation(arguments))
+        if (new ConfigurationOperation(configurationController, databaseManager).process(arguments))
             return;
 
         // Do not further process arguments if configuration is invalid.
@@ -63,8 +62,13 @@ public class AppController {
         if (user == null)
             return;
 
-        processTodoOperation(arguments, new TodoService(databaseManager.getDatabase(), user));
-        processNoOperation(arguments, user);
+        if (arguments.contains(Arrays.asList("-a", "-u", "-d", "-g"))) {
+            TodoService todoService = new TodoService(databaseManager.getDatabase(), user);
+            new TodoOperation(todoService).process(arguments);
+            return;
+        }
+
+        new TodoWizard().process();
     }
 
     public boolean processHelpOperation(ArgumentCollection arguments, ArgumentParser parser) {
@@ -73,88 +77,6 @@ public class AppController {
             return true;
         }
         return false;
-    }
-
-    public boolean processConfigurationOperation(ArgumentCollection arguments) {
-        if (arguments.contains("-cf")) {
-            configurationController.setUsername(arguments.get("username"));
-            configurationController.setPassword(arguments.get("password"));
-            configurationController.setDatabaseLocation(arguments.get("db"));
-            configurationController.save();
-            return true;
-        }
-
-        if (arguments.contains("-addUser")) {
-            // Are we able to add a new user?
-            ConfigurationValidator validator = new ConfigurationValidator();
-            if (!validator.isValid(configurationController)) {
-                return true;
-            }
-
-            UserService userService = new UserService(databaseManager.getDatabase());
-            try {
-                userService.addUser(configurationController.getUsername(),
-                        configurationController.getPassword());
-            } catch (UserService.UserValidationErrors.UsernameAlreadyExists e) {
-                System.out.println("Username already exists.");
-            } catch (UserService.UserValidationError e) {
-                System.out.println("Unhandled validation error: " + e.getMessage());
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public void processTodoOperation(ArgumentCollection arguments, TodoService todoService) {
-        if (!arguments.contains(Arrays.asList("-a", "-u", "-d", "-g"))) {
-            return;
-        }
-
-        if (arguments.contains("-a")) {
-            todoService.addTodo(arguments.get("title"), arguments.get("description"));
-        } else if (arguments.contains("-u")) {
-            todoService.updateTodo(arguments.get("title"), arguments.get("newTitle"),
-                    arguments.get("description"));
-        } else if (arguments.contains("-d")) {
-            todoService.deleteTodo(arguments.get("title"));
-        } else if (arguments.contains("-g")) {
-
-            List<TodoModel> todos;
-
-            if (arguments.contains("title")) {
-                todos = todoService.getByTitle(arguments.get("title"));
-            } else {
-                todos = todoService.getAll();
-            }
-
-            for (TodoModel todo : todos) {
-                if (todo.description != null) {
-                    System.out.println(String.format("[%s] :: %s :: %s", todo.getId(), todo.title,
-                            todo.description));
-                } else {
-                    System.out.println(String.format("[%s] :: %s\t", todo.getId(), todo.title));
-                }
-            }
-
-            if (todos.size() == 0) {
-                System.out.println("No todo items found.");
-            }
-        }
-    }
-
-    private void processNoOperation(ArgumentCollection arguments, User user) {
-        if (!arguments.isEmpty()) {
-            return;
-        }
-
-        // Start the application.
-        // Walk through adding, updating etc
-
-        /*
-         * Select option: Find / All / Add / Update / Remove
-         */
     }
 
     public void terminate() {
