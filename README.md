@@ -6,6 +6,8 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
+<!-- x -->
+
 <h3 align="center">Java To-do App</h3>
 <div>
   <p align="center">
